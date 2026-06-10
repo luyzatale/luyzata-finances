@@ -151,6 +151,8 @@ input,select,textarea{font-family:inherit}
 .row-total{font-weight:600;font-size:.78rem;white-space:nowrap}
 .del-row-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:2px 5px;border-radius:4px;font-size:11px;opacity:.5;transition:all var(--tr)}
 .del-row-btn:hover{opacity:1;color:var(--red)}
+.add-th-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:1px 7px;font-size:.8rem;font-weight:700;cursor:pointer;margin-left:6px;vertical-align:middle;line-height:1.7;transition:background var(--tr)}
+.add-th-btn:hover{background:#5b52e0;box-shadow:0 0 8px rgba(108,99,255,.4)}
 
 /* ========== CHIPS ========== */
 .chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:.68rem;font-weight:600;white-space:nowrap}
@@ -997,58 +999,63 @@ function buildGridTable(rows, module, sectionKey, headerLabel, headerIcon, extra
   return rowsHtml;
 }
 
-function buildSubtotalRow(label, rows, cssClass='') {
-  const monthTotals = MONTHS.map((_,i) => `<td class="subtotal-cell">${fmt(rowMonthSum(rows,i))}</td>`).join('');
+function buildSubtotalRow(label, rows, cssClass='', sk='') {
+  const monthTotals = MONTHS.map((_,i) =>
+    `<td class="subtotal-cell"${sk?` data-st="${sk}" data-mi="${i}"`:''}>${fmt(rowMonthSum(rows,i))}</td>`
+  ).join('');
   const annual = fmt(rowTotal(rows));
-  return `<tr class="subtotal-row ${cssClass}"><td>${label}</td>${monthTotals}<td>${annual}</td></tr>`;
+  return `<tr class="subtotal-row ${cssClass}"><td>${label}</td>${monthTotals}<td${sk?` data-st-ann="${sk}"`:''}>${annual}</td></tr>`;
 }
 
-function buildPctRow(label, rows, incomeRows) {
+function buildPctRow(label, rows, incomeRows, sk='') {
   const monthCells = MONTHS.map((_,i) => {
     const sec = rowMonthSum(rows,i);
     const inc = rowMonthSum(incomeRows,i);
-    return `<td>${inc>0?Math.round((sec/inc)*100)+'%':'—'}</td>`;
+    return `<td${sk?` data-pct="${sk}" data-mi="${i}"`:''}>${inc>0?Math.round((sec/inc)*100)+'%':'—'}</td>`;
   }).join('');
   const annSec = rowTotal(rows); const annInc = rowTotal(incomeRows);
-  return `<tr class="pct-row"><td>${label}</td>${monthCells}<td>${annInc>0?pct(annSec,annInc)+'%':'—'}</td></tr>`;
+  return `<tr class="pct-row"><td>${label}</td>${monthCells}<td${sk?` data-pct-ann="${sk}"`:''}>${annInc>0?pct(annSec,annInc)+'%':'—'}</td></tr>`;
+}
+
+function makeHeader(module, section) {
+  return `<th>Category <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}" title="Add row">+</button></th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th>`;
 }
 
 function buildPersonalGrid(yd) {
   const p = yd.personal;
-  const mh = `<th>Category</th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th>`;
-  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="trending-up"></i>Income (+)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="personal" data-section="income"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="trending-up"></i>Income (+)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('personal','income')}</tr></thead><tbody>
   ${buildGridTable(p.income.rows,'personal','income')}
-  ${buildSubtotalRow('Total Income', p.income.rows, 'income-row')}
+  ${buildSubtotalRow('Total Income', p.income.rows, 'income-row', 'income')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="home"></i>Essential Expenses (−) <span class="chip chip-amber" style="font-size:.65rem">Target ≤50%</span></div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="personal" data-section="essential"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="home"></i>Essential Expenses (−) <span class="chip chip-amber" style="font-size:.65rem">Target ≤50%</span></div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('personal','essential')}</tr></thead><tbody>
   ${buildGridTable(p.essential.rows,'personal','essential')}
-  ${buildSubtotalRow('Subtotal Essential', p.essential.rows)}
-  ${buildPctRow('% of Income', p.essential.rows, p.income.rows)}
+  ${buildSubtotalRow('Subtotal Essential', p.essential.rows, '', 'essential')}
+  ${buildPctRow('% of Income', p.essential.rows, p.income.rows, 'essential')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="coffee"></i>Non-Essential (−) <span class="chip chip-blue" style="font-size:.65rem">Target ≤30%</span></div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="personal" data-section="nonEssential"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="coffee"></i>Non-Essential (−) <span class="chip chip-blue" style="font-size:.65rem">Target ≤30%</span></div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('personal','nonEssential')}</tr></thead><tbody>
   ${buildGridTable(p.nonEssential.rows,'personal','nonEssential')}
-  ${buildSubtotalRow('Subtotal Non-Essential', p.nonEssential.rows)}
-  ${buildPctRow('% of Income', p.nonEssential.rows, p.income.rows)}
+  ${buildSubtotalRow('Subtotal Non-Essential', p.nonEssential.rows, '', 'nonEssential')}
+  ${buildPctRow('% of Income', p.nonEssential.rows, p.income.rows, 'nonEssential')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="credit-card"></i>Credit Cards (−)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="personal" data-section="creditCards"><i data-lucide="plus"></i>Add Card</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="credit-card"></i>Credit Cards (−)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('personal','creditCards')}</tr></thead><tbody>
   ${buildGridTable(p.creditCards.rows,'personal','creditCards')}
-  ${buildSubtotalRow('Total Credit Cards', p.creditCards.rows)}
+  ${buildSubtotalRow('Total Credit Cards', p.creditCards.rows, '', 'creditCards')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="trending-up"></i>Investments (→) <span class="chip chip-green" style="font-size:.65rem">Target ≥20%</span></div></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="bar-chart-2"></i>Investments (→) <span class="chip chip-green" style="font-size:.65rem">Target ≥20%</span></div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('personal','investments')}</tr></thead><tbody>
   ${buildGridTable(p.investments.rows,'personal','investments')}
-  ${buildPctRow('% of Income', p.investments.rows, p.income.rows)}
+  ${buildPctRow('% of Income', p.investments.rows, p.income.rows, 'investments')}
   </tbody></table></div>`;
 
-  // Surplus
+  // Surplus row — data-surplus/data-surplus-ann for targeted updates
   const surplusRows = MONTHS.map((_,i) => {
     const inc = rowMonthSum(p.income.rows,i);
     const ess = rowMonthSum(p.essential.rows,i);
@@ -1056,17 +1063,12 @@ function buildPersonalGrid(yd) {
     const crd = rowMonthSum(p.creditCards.rows,i);
     const inv = rowMonthSum(p.investments.rows,i);
     const s = inc - ess - non - crd - inv;
-    const col = s >= 0 ? 'var(--green)' : 'var(--red)';
-    return `<td style="color:${col};font-weight:700">${fmt(s)}</td>`;
+    return `<td data-surplus="${i}" style="color:${s>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(s)}</td>`;
   }).join('');
   const annInc = rowTotal(p.income.rows);
-  const annEss = rowTotal(p.essential.rows);
-  const annNon = rowTotal(p.nonEssential.rows);
-  const annCrd = rowTotal(p.creditCards.rows);
-  const annInv = rowTotal(p.investments.rows);
-  const annSurp = annInc - annEss - annNon - annCrd - annInv;
+  const annSurp = annInc - rowTotal(p.essential.rows) - rowTotal(p.nonEssential.rows) - rowTotal(p.creditCards.rows) - rowTotal(p.investments.rows);
   html += `<div class="budget-grid-wrap" style="margin-top:8px"><table class="budget-grid"><tbody>
-  <tr class="surplus-row"><td>Monthly Surplus (=)</td>${surplusRows}<td style="color:${annSurp>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(annSurp)}</td></tr>
+  <tr class="surplus-row"><td>Monthly Surplus (=)</td>${surplusRows}<td data-surplus-ann style="color:${annSurp>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(annSurp)}</td></tr>
   </tbody></table></div>`;
 
   return html;
@@ -1074,33 +1076,31 @@ function buildPersonalGrid(yd) {
 
 function buildBusinessGrid(yd) {
   const b = yd.business;
-  const mh = `<th>Category</th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th>`;
 
-  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="arrow-up-circle"></i>Revenue (+)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="business" data-section="revenue"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="arrow-up-circle"></i>Revenue (+)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('business','revenue')}</tr></thead><tbody>
   ${buildGridTable(b.revenue.rows,'business','revenue')}
-  ${buildSubtotalRow('Total Revenue', b.revenue.rows, 'income-row')}
+  ${buildSubtotalRow('Total Revenue', b.revenue.rows, 'income-row', 'revenue')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="arrow-down-circle"></i>Expenses (−)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="business" data-section="expenses"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="arrow-down-circle"></i>Expenses (−)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('business','expenses')}</tr></thead><tbody>
   ${buildGridTable(b.expenses.rows,'business','expenses')}
-  ${buildSubtotalRow('Total Expenses', b.expenses.rows)}
+  ${buildSubtotalRow('Total Expenses', b.expenses.rows, '', 'expenses')}
   </tbody></table></div>`;
 
-  // Operating Result
+  // Operating Result — data-opresult/data-opresult-ann for targeted updates
   const opRows = MONTHS.map((_,i) => {
     const rev = rowMonthSum(b.revenue.rows,i);
     const exp = rowMonthSum(b.expenses.rows,i);
     const r = rev - exp;
-    const col = r >= 0 ? 'var(--green)' : 'var(--red)';
-    return `<td style="color:${col};font-weight:700">${fmt(r)}</td>`;
+    return `<td data-opresult="${i}" style="color:${r>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(r)}</td>`;
   }).join('');
   const annRev = rowTotal(b.revenue.rows);
   const annExp = rowTotal(b.expenses.rows);
   const annOp = annRev - annExp;
   html += `<div class="budget-grid-wrap" style="margin-top:8px"><table class="budget-grid"><tbody>
-  <tr class="surplus-row"><td>Operating Result (=)</td>${opRows}<td style="color:${annOp>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(annOp)}</td></tr>
+  <tr class="surplus-row"><td>Operating Result (=)</td>${opRows}<td data-opresult-ann style="color:${annOp>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(annOp)}</td></tr>
   </tbody></table></div>`;
 
   return html;
@@ -1165,8 +1165,77 @@ function bindBudgetEvents(container) {
 }
 
 function refreshGridTotals(container, yd, module) {
-  // Re-render just the container — fast enough for 12 columns
-  renderSection(CS);
+  // Targeted DOM updates — does NOT re-render, so focus is preserved
+  const sections = module === 'investments' ? yd.investments : yd[module];
+  const incomeRows = sections.income?.rows || sections.revenue?.rows || [];
+
+  // 1. Per-row annual totals
+  container.querySelectorAll('[data-rowtotal]').forEach(cell => {
+    const rowId = cell.dataset.rowtotal;
+    Object.values(sections).forEach(sec => {
+      if(sec?.rows) {
+        const row = sec.rows.find(r => r.id === rowId);
+        if(row) cell.textContent = fmt(rowSum(row));
+      }
+    });
+  });
+
+  // 2. Section subtotals (monthly)
+  container.querySelectorAll('[data-st][data-mi]').forEach(cell => {
+    const sec = sections[cell.dataset.st];
+    if(sec) cell.textContent = fmt(rowMonthSum(sec.rows, parseInt(cell.dataset.mi)));
+  });
+  container.querySelectorAll('[data-st-ann]').forEach(cell => {
+    const sec = sections[cell.dataset.stAnn];
+    if(sec) cell.textContent = fmt(rowTotal(sec.rows));
+  });
+
+  // 3. % of income rows (monthly)
+  container.querySelectorAll('[data-pct][data-mi]').forEach(cell => {
+    const sec = sections[cell.dataset.pct];
+    if(sec && incomeRows.length) {
+      const mi = parseInt(cell.dataset.mi);
+      const s = rowMonthSum(sec.rows, mi);
+      const inc = rowMonthSum(incomeRows, mi);
+      cell.textContent = inc > 0 ? Math.round((s/inc)*100)+'%' : '—';
+    }
+  });
+  container.querySelectorAll('[data-pct-ann]').forEach(cell => {
+    const sec = sections[cell.dataset.pctAnn];
+    if(sec && incomeRows.length) {
+      const s = rowTotal(sec.rows);
+      const inc = rowTotal(incomeRows);
+      cell.textContent = inc > 0 ? pct(s, inc)+'%' : '—';
+    }
+  });
+
+  // 4. Surplus row (personal)
+  if(module === 'personal') {
+    const p = sections;
+    container.querySelectorAll('[data-surplus]').forEach(cell => {
+      const mi = parseInt(cell.dataset.surplus);
+      const s = rowMonthSum(p.income.rows,mi) - rowMonthSum(p.essential.rows,mi) - rowMonthSum(p.nonEssential.rows,mi) - rowMonthSum(p.creditCards.rows,mi) - rowMonthSum(p.investments.rows,mi);
+      cell.textContent = fmt(s);
+      cell.style.color = s >= 0 ? 'var(--green)' : 'var(--red)';
+    });
+    const annSurp = rowTotal(p.income.rows) - rowTotal(p.essential.rows) - rowTotal(p.nonEssential.rows) - rowTotal(p.creditCards.rows) - rowTotal(p.investments.rows);
+    const annCell = container.querySelector('[data-surplus-ann]');
+    if(annCell) { annCell.textContent = fmt(annSurp); annCell.style.color = annSurp >= 0 ? 'var(--green)' : 'var(--red)'; }
+  }
+
+  // 5. Operating result row (business)
+  if(module === 'business') {
+    const b = sections;
+    container.querySelectorAll('[data-opresult]').forEach(cell => {
+      const mi = parseInt(cell.dataset.opresult);
+      const r = rowMonthSum(b.revenue.rows,mi) - rowMonthSum(b.expenses.rows,mi);
+      cell.textContent = fmt(r);
+      cell.style.color = r >= 0 ? 'var(--green)' : 'var(--red)';
+    });
+    const annOp = rowTotal(b.revenue.rows) - rowTotal(b.expenses.rows);
+    const annCell = container.querySelector('[data-opresult-ann]');
+    if(annCell) { annCell.textContent = fmt(annOp); annCell.style.color = annOp >= 0 ? 'var(--green)' : 'var(--red)'; }
+  }
 }
 
 // ============================================================
@@ -1187,17 +1256,16 @@ function renderInvestments() {
     <div class="card card-sm"><div class="kpi-label"><i data-lucide="activity"></i>Variable Income</div><div class="kpi-value text-amber" style="font-size:1.2rem">${fmt(varTotal)}</div><div class="kpi-sub">${grandTotal>0?pct(varTotal,grandTotal)+'% of portfolio':'—'}</div></div>
   `;
 
-  const mh = `<th>Category</th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th>`;
-  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="shield"></i>Fixed Income (Renda Fixa)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="investments" data-section="fixedIncome"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  let html = `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="shield"></i>Fixed Income (Renda Fixa)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('investments','fixedIncome')}</tr></thead><tbody>
   ${buildGridTable(inv.fixedIncome.rows,'investments','fixedIncome')}
-  ${buildSubtotalRow('Fixed Income Total', inv.fixedIncome.rows)}
+  ${buildSubtotalRow('Fixed Income Total', inv.fixedIncome.rows, '', 'fixedIncome')}
   </tbody></table></div>`;
 
-  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="activity"></i>Variable Income (Renda Variável)</div><button class="btn btn-ghost btn-sm" data-addrow="1" data-module="investments" data-section="variableIncome"><i data-lucide="plus"></i>Add</button></div>
-  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${mh}</tr></thead><tbody>
+  html += `<div class="budget-section-header"><div class="budget-section-title"><i data-lucide="activity"></i>Variable Income (Renda Variável)</div></div>
+  <div class="budget-grid-wrap"><table class="budget-grid"><thead><tr>${makeHeader('investments','variableIncome')}</tr></thead><tbody>
   ${buildGridTable(inv.variableIncome.rows,'investments','variableIncome')}
-  ${buildSubtotalRow('Variable Income Total', inv.variableIncome.rows)}
+  ${buildSubtotalRow('Variable Income Total', inv.variableIncome.rows, '', 'variableIncome')}
   </tbody></table></div>`;
 
   document.getElementById('invest-container').innerHTML = html;
