@@ -325,6 +325,11 @@ select.form-input option{background:var(--surface)}
 .spinning{animation:spin .8s linear infinite}
 .loading-overlay{display:flex;align-items:center;justify-content:center;height:260px;gap:12px;color:var(--muted);font-size:.875rem}
 .loading-spinner{width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+/* ── Language toggle ────────────────────────────────────── */
+.lang-toggle{display:flex;gap:2px;background:var(--surface2);border-radius:6px;padding:2px}
+.lang-btn{background:none;border:none;color:var(--muted);font-size:.72rem;font-weight:700;cursor:pointer;padding:3px 8px;border-radius:4px;transition:all var(--tr);letter-spacing:.04em}
+.lang-btn.active{background:var(--accent);color:#fff}
+.lang-btn:hover:not(.active){color:var(--text)}
 /* ── Hidden modules ─────────────────────────────────────── */
 .nav-item[data-page="business"],.nav-item[data-page="investments"],
 .mobile-nav-item[data-page="investments"],
@@ -340,19 +345,19 @@ section.page-section[data-page="investments"],
 <aside id="sidebar">
   <div class="sidebar-logo">
     <h1 id="sidebar-app-name">Finflow</h1>
-    <small>Your money. Your clarity.</small>
+    <small data-i18n="app_tagline">Your money. Your clarity.</small>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i>Dashboard</div>
-    <div class="nav-item" data-page="personal"><i data-lucide="user"></i>Personal Budget</div>
-    <div class="nav-item" data-page="weekly"><i data-lucide="calendar-days"></i>Weekly Control</div>
-    <div class="nav-item" data-page="business"><i data-lucide="briefcase"></i>Business Budget</div>
-    <div class="nav-item" data-page="investments"><i data-lucide="trending-up"></i>Investments</div>
-    <div class="nav-item" data-page="debts"><i data-lucide="credit-card"></i>Debts</div>
-    <div class="nav-item" data-page="goals"><i data-lucide="target"></i>Goals</div>
+    <div class="nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span data-i18n="nav_dashboard">Dashboard</span></div>
+    <div class="nav-item" data-page="personal"><i data-lucide="user"></i><span data-i18n="nav_personal">Personal Budget</span></div>
+    <div class="nav-item" data-page="weekly"><i data-lucide="calendar-days"></i><span data-i18n="nav_weekly">Weekly Control</span></div>
+    <div class="nav-item" data-page="business"><i data-lucide="briefcase"></i><span data-i18n="nav_business">Business Budget</span></div>
+    <div class="nav-item" data-page="investments"><i data-lucide="trending-up"></i><span data-i18n="nav_investments">Investments</span></div>
+    <div class="nav-item" data-page="debts"><i data-lucide="credit-card"></i><span data-i18n="nav_debts">Debts</span></div>
+    <div class="nav-item" data-page="goals"><i data-lucide="target"></i><span data-i18n="nav_goals">Goals</span></div>
   </nav>
   <div class="sidebar-footer">
-    <div class="nav-item" id="settings-btn"><i data-lucide="settings"></i>Settings</div>
+    <div class="nav-item" id="settings-btn"><i data-lucide="settings"></i><span data-i18n="nav_settings">Settings</span></div>
   </div>
 </aside>
 
@@ -361,16 +366,20 @@ section.page-section[data-page="investments"],
   <div id="topbar">
     <span class="topbar-title" id="topbar-page-title">Dashboard</span>
     <div class="topbar-actions">
-      <div id="sync-status" class="sync-badge sync-idle" title="Cloud sync status">
-        <i data-lucide="cloud"></i><span id="sync-text">Synced</span>
+      <div id="sync-status" class="sync-badge sync-idle" data-i18n-title="sync_title">
+        <i data-lucide="cloud"></i><span id="sync-text" data-i18n="sync_idle">Synced</span>
       </div>
       <div class="year-selector">
         <button class="year-btn" id="year-prev"><i data-lucide="chevron-left"></i></button>
         <span class="year-display" id="year-display">2025</span>
         <button class="year-btn" id="year-next"><i data-lucide="chevron-right"></i></button>
       </div>
-      <button class="btn-icon" id="settings-btn-top" title="Settings"><i data-lucide="settings"></i></button>
-      <button class="btn-icon" id="export-btn-top" title="Export"><i data-lucide="download"></i></button>
+      <div class="lang-toggle" id="lang-toggle">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="nl">NL</button>
+      </div>
+      <button class="btn-icon" id="settings-btn-top" data-i18n-title="nav_settings"><i data-lucide="settings"></i></button>
+      <button class="btn-icon" id="export-btn-top" data-i18n-title="btn_export"><i data-lucide="download"></i></button>
     </div>
   </div>
 
@@ -379,28 +388,28 @@ section.page-section[data-page="investments"],
     <section class="page-section active" data-page="dashboard">
       <div id="debt-alert" class="alert alert-amber hidden">
         <i data-lucide="alert-triangle"></i>
-        <span id="debt-alert-msg">You have active debts.</span>
+        <span id="debt-alert-msg" data-i18n="alert_debts">You have active debts.</span>
         <button class="alert-dismiss" id="debt-alert-dismiss">✕</button>
       </div>
       <div class="kpi-grid" id="kpi-grid">
-        <div class="kpi-card income"><div class="kpi-label"><i data-lucide="trending-up"></i>Total Income</div><div class="kpi-value positive" id="kpi-income">R$ 0</div><div class="kpi-sub">Personal</div></div>
-        <div class="kpi-card expense"><div class="kpi-label"><i data-lucide="trending-down"></i>Total Expenses</div><div class="kpi-value negative" id="kpi-expenses">R$ 0</div><div class="kpi-sub">All categories</div></div>
-        <div class="kpi-card"><div class="kpi-label"><i data-lucide="wallet"></i>Net Balance</div><div class="kpi-value" id="kpi-balance">R$ 0</div><div class="kpi-sub">Income − Expenses</div></div>
-        <div class="kpi-card invested"><div class="kpi-label"><i data-lucide="bar-chart-2"></i>Invested</div><div class="kpi-value text-blue" id="kpi-invested">R$ 0</div><div class="kpi-sub">This year total</div></div>
-        <div class="kpi-card debt-kpi"><div class="kpi-label"><i data-lucide="credit-card"></i>Active Debt</div><div class="kpi-value text-amber" id="kpi-debt">R$ 0</div><div class="kpi-sub">Total remaining</div></div>
+        <div class="kpi-card income"><div class="kpi-label"><i data-lucide="trending-up"></i><span data-i18n="kpi_income">Total Income</span></div><div class="kpi-value positive" id="kpi-income">R$ 0</div><div class="kpi-sub" data-i18n="kpi_income_sub">Personal</div></div>
+        <div class="kpi-card expense"><div class="kpi-label"><i data-lucide="trending-down"></i><span data-i18n="kpi_expenses">Total Expenses</span></div><div class="kpi-value negative" id="kpi-expenses">R$ 0</div><div class="kpi-sub" data-i18n="kpi_expenses_sub">All categories</div></div>
+        <div class="kpi-card"><div class="kpi-label"><i data-lucide="wallet"></i><span data-i18n="kpi_balance">Net Balance</span></div><div class="kpi-value" id="kpi-balance">R$ 0</div><div class="kpi-sub" data-i18n="kpi_balance_sub">Income − Expenses</div></div>
+        <div class="kpi-card invested"><div class="kpi-label"><i data-lucide="bar-chart-2"></i><span data-i18n="kpi_invested">Invested</span></div><div class="kpi-value text-blue" id="kpi-invested">R$ 0</div><div class="kpi-sub" data-i18n="kpi_invested_sub">This year total</div></div>
+        <div class="kpi-card debt-kpi"><div class="kpi-label"><i data-lucide="credit-card"></i><span data-i18n="kpi_debt">Active Debt</span></div><div class="kpi-value text-amber" id="kpi-debt">R$ 0</div><div class="kpi-sub" data-i18n="kpi_debt_sub">Total remaining</div></div>
       </div>
       <div class="section-header" style="margin-bottom:12px">
-        <span class="text-xs font-bold text-muted" style="text-transform:uppercase;letter-spacing:.06em">50/30/20 Rule</span>
-        <span class="text-xs text-muted" id="rule-basis">Based on full year</span>
+        <span class="text-xs font-bold text-muted" style="text-transform:uppercase;letter-spacing:.06em" data-i18n="rule_title">50/30/20 Rule</span>
+        <span class="text-xs text-muted" id="rule-basis" data-i18n="rule_basis">Based on full year</span>
       </div>
       <div class="rule-grid">
-        <div class="rule-card"><div class="rule-label">Essential Expenses</div><div class="rule-pct" id="rule-ess-pct">0%</div><div class="rule-target">Target: ≤ 50% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-ess-bar" style="width:0%"></div></div></div>
-        <div class="rule-card"><div class="rule-label">Non-Essential</div><div class="rule-pct" id="rule-non-pct">0%</div><div class="rule-target">Target: ≤ 30% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-non-bar" style="width:0%"></div></div></div>
-        <div class="rule-card"><div class="rule-label">Investments</div><div class="rule-pct" id="rule-inv-pct">0%</div><div class="rule-target">Target: ≥ 20% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-inv-bar" style="width:0%"></div></div></div>
+        <div class="rule-card"><div class="rule-label" data-i18n="rule_essential">Essential Expenses</div><div class="rule-pct" id="rule-ess-pct">0%</div><div class="rule-target" data-i18n="rule_essential_target">Target: ≤ 50% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-ess-bar" style="width:0%"></div></div></div>
+        <div class="rule-card"><div class="rule-label" data-i18n="rule_non_essential">Non-Essential</div><div class="rule-pct" id="rule-non-pct">0%</div><div class="rule-target" data-i18n="rule_non_essential_target">Target: ≤ 30% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-non-bar" style="width:0%"></div></div></div>
+        <div class="rule-card"><div class="rule-label" data-i18n="rule_investments">Investments</div><div class="rule-pct" id="rule-inv-pct">0%</div><div class="rule-target" data-i18n="rule_investments_target">Target: ≥ 20% of income</div><div class="pbar-wrap"><div class="pbar-fill green" id="rule-inv-bar" style="width:0%"></div></div></div>
       </div>
       <div class="charts-grid">
-        <div class="chart-card"><div class="chart-title">Monthly Income vs Expenses</div><div style="position:relative;height:240px"><canvas id="chart-line"></canvas></div></div>
-        <div class="chart-card"><div class="chart-title">Expense Breakdown</div><div style="position:relative;height:240px"><canvas id="chart-donut"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title" data-i18n="chart_income_expenses">Monthly Income vs Expenses</div><div style="position:relative;height:240px"><canvas id="chart-line"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title" data-i18n="chart_breakdown">Expense Breakdown</div><div style="position:relative;height:240px"><canvas id="chart-donut"></canvas></div></div>
       </div>
       <div class="charts-grid full">
         <div class="chart-card"><div class="chart-title">Business: Revenue vs Expenses per Month</div><div style="position:relative;height:210px"><canvas id="chart-bar"></canvas></div></div>
@@ -410,7 +419,7 @@ section.page-section[data-page="investments"],
     <!-- ===== PERSONAL BUDGET ===== -->
     <section class="page-section" data-page="personal">
       <div class="section-header">
-        <h2 class="section-title">Personal Budget</h2>
+        <h2 class="section-title" data-i18n="nav_personal">Personal Budget</h2>
         <span class="text-xs text-muted" id="personal-year-label">2025</span>
       </div>
       <div id="personal-container"></div>
@@ -419,27 +428,27 @@ section.page-section[data-page="investments"],
     <!-- ===== WEEKLY CONTROL ===== -->
     <section class="page-section" data-page="weekly">
       <div class="section-header">
-        <h2 class="section-title">Weekly Control</h2>
+        <h2 class="section-title" data-i18n="nav_weekly">Weekly Control</h2>
         <select class="form-input" id="weekly-month-sel" style="width:auto;padding:6px 11px;font-size:.85rem"></select>
       </div>
       <div class="weekly-panels">
         <div>
           <div class="budget-section-header">
-            <div class="budget-section-title"><i data-lucide="file-text"></i>Fixed Bills</div>
-            <button class="btn btn-ghost btn-sm" id="add-fixed-bill-btn"><i data-lucide="plus"></i>Add Bill</button>
+            <div class="budget-section-title"><i data-lucide="file-text"></i><span data-i18n="weekly_fixed_bills">Fixed Bills</span></div>
+            <button class="btn btn-ghost btn-sm" id="add-fixed-bill-btn"><i data-lucide="plus"></i><span data-i18n="btn_add_bill">Add Bill</span></button>
           </div>
           <div class="table-wrap"><table class="data-table" id="fixed-bills-table">
-            <thead><tr><th>Description</th><th>Amount</th><th>Due Week</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th data-i18n="th_description">Description</th><th data-i18n="th_amount">Amount</th><th data-i18n="th_due_week">Due Week</th><th data-i18n="th_status">Status</th><th></th></tr></thead>
             <tbody id="fixed-bills-tbody"></tbody>
           </table></div>
         </div>
         <div>
           <div class="budget-section-header">
-            <div class="budget-section-title"><i data-lucide="layers"></i>Variable Expenses</div>
-            <button class="btn btn-ghost btn-sm" id="add-var-cat-btn"><i data-lucide="plus"></i>Add Category</button>
+            <div class="budget-section-title"><i data-lucide="layers"></i><span data-i18n="weekly_variable_expenses">Variable Expenses</span></div>
+            <button class="btn btn-ghost btn-sm" id="add-var-cat-btn"><i data-lucide="plus"></i><span data-i18n="btn_add_category">Add Category</span></button>
           </div>
           <div class="table-wrap scrollable"><table class="wk-table" id="var-exp-table">
-            <thead><tr><th>Category</th><th>Limit</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>Total</th><th>Left</th><th></th></tr></thead>
+            <thead><tr><th data-i18n="th_category">Category</th><th data-i18n="th_limit">Limit</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th data-i18n="th_total">Total</th><th data-i18n="th_left">Left</th><th></th></tr></thead>
             <tbody id="var-exp-tbody"></tbody>
           </table></div>
         </div>
@@ -468,13 +477,13 @@ section.page-section[data-page="investments"],
     <!-- ===== DEBTS ===== -->
     <section class="page-section" data-page="debts">
       <div class="section-header">
-        <h2 class="section-title">Debts</h2>
-        <button class="btn btn-primary btn-sm" id="add-debt-btn"><i data-lucide="plus"></i>Add Debt</button>
+        <h2 class="section-title" data-i18n="nav_debts">Debts</h2>
+        <button class="btn btn-primary btn-sm" id="add-debt-btn"><i data-lucide="plus"></i><span data-i18n="btn_add_debt">Add Debt</span></button>
       </div>
       <div class="debt-summary-grid" id="debt-summary"></div>
       <div class="table-wrap scrollable">
         <table class="data-table" id="debts-main-table">
-          <thead><tr><th>Creditor</th><th>Start</th><th>Installment</th><th># Inst.</th><th>Total</th><th>Rate</th><th>Paid</th><th>Progress</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+          <thead><tr><th data-i18n="th_creditor">Creditor</th><th data-i18n="th_start">Start</th><th data-i18n="th_installment">Installment</th><th data-i18n="th_num_inst"># Inst.</th><th data-i18n="th_total">Total</th><th data-i18n="th_rate">Rate</th><th data-i18n="th_paid">Paid</th><th data-i18n="th_progress">Progress</th><th data-i18n="th_reason">Reason</th><th data-i18n="th_status">Status</th><th></th></tr></thead>
           <tbody id="debts-tbody"></tbody>
         </table>
       </div>
@@ -483,13 +492,13 @@ section.page-section[data-page="investments"],
     <!-- ===== GOALS ===== -->
     <section class="page-section" data-page="goals">
       <div class="section-header">
-        <h2 class="section-title">Financial Goals</h2>
-        <button class="btn btn-primary btn-sm" id="add-goal-btn"><i data-lucide="plus"></i>Add Goal</button>
+        <h2 class="section-title" data-i18n="nav_goals_long">Financial Goals</h2>
+        <button class="btn btn-primary btn-sm" id="add-goal-btn"><i data-lucide="plus"></i><span data-i18n="btn_add_goal">Add Goal</span></button>
       </div>
       <div class="goals-grid">
-        <div><div class="goals-col-title"><i data-lucide="zap"></i>Short-term (≤ 2yr)</div><div id="goals-short"></div></div>
-        <div><div class="goals-col-title"><i data-lucide="clock"></i>Medium-term (2–5yr)</div><div id="goals-medium"></div></div>
-        <div><div class="goals-col-title"><i data-lucide="mountain"></i>Long-term (5yr+)</div><div id="goals-long"></div></div>
+        <div><div class="goals-col-title"><i data-lucide="zap"></i><span data-i18n="goals_short">Short-term (≤ 2yr)</span></div><div id="goals-short"></div></div>
+        <div><div class="goals-col-title"><i data-lucide="clock"></i><span data-i18n="goals_medium">Medium-term (2–5yr)</span></div><div id="goals-medium"></div></div>
+        <div><div class="goals-col-title"><i data-lucide="mountain"></i><span data-i18n="goals_long">Long-term (5yr+)</span></div><div id="goals-long"></div></div>
       </div>
     </section>
   </div>
@@ -497,12 +506,12 @@ section.page-section[data-page="investments"],
 
 <!-- ========== MOBILE NAV ========== -->
 <nav id="mobile-nav">
-  <button class="mobile-nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i>Home</button>
-  <button class="mobile-nav-item" data-page="personal"><i data-lucide="user"></i>Personal</button>
-  <button class="mobile-nav-item" data-page="weekly"><i data-lucide="calendar-days"></i>Weekly</button>
-  <button class="mobile-nav-item" data-page="investments"><i data-lucide="trending-up"></i>Invest</button>
-  <button class="mobile-nav-item" data-page="debts"><i data-lucide="credit-card"></i>Debts</button>
-  <button class="mobile-nav-item" data-page="goals"><i data-lucide="target"></i>Goals</button>
+  <button class="mobile-nav-item active" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span data-i18n="mobile_home">Home</span></button>
+  <button class="mobile-nav-item" data-page="personal"><i data-lucide="user"></i><span data-i18n="mobile_personal">Personal</span></button>
+  <button class="mobile-nav-item" data-page="weekly"><i data-lucide="calendar-days"></i><span data-i18n="mobile_weekly">Weekly</span></button>
+  <button class="mobile-nav-item" data-page="investments"><i data-lucide="trending-up"></i><span data-i18n="mobile_invest">Invest</span></button>
+  <button class="mobile-nav-item" data-page="debts"><i data-lucide="credit-card"></i><span data-i18n="nav_debts">Debts</span></button>
+  <button class="mobile-nav-item" data-page="goals"><i data-lucide="target"></i><span data-i18n="nav_goals">Goals</span></button>
 </nav>
 
 <!-- ========== ONBOARDING MODAL ========== -->
@@ -512,29 +521,29 @@ section.page-section[data-page="investments"],
       <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
     </div>
     <div class="onboarding-step active" id="ob-step-1">
-      <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:7px">Welcome to <span class="text-accent">Finflow</span></h2>
-      <p class="text-muted text-sm" style="margin-bottom:22px">Your personal finance command center. Set up in 3 quick steps.</p>
-      <div class="form-group"><label class="form-label">App Name</label><input type="text" class="form-input" id="ob-appname" value="Finflow" placeholder="Finflow"></div>
-      <div class="form-group"><label class="form-label">Currency</label>
+      <h2 style="font-size:1.4rem;font-weight:700;margin-bottom:7px"><span data-i18n="ob_welcome">Welcome to</span> <span class="text-accent">Finflow</span></h2>
+      <p class="text-muted text-sm" style="margin-bottom:22px" data-i18n="ob_subtitle">Your personal finance command center. Set up in 3 quick steps.</p>
+      <div class="form-group"><label class="form-label" data-i18n="form_app_name">App Name</label><input type="text" class="form-input" id="ob-appname" value="Finflow" placeholder="Finflow"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_currency">Currency</label>
         <select class="form-input" id="ob-currency">
           <option value="BRL">BRL — R$ (Brazilian Real)</option>
           <option value="USD">USD — $ (US Dollar)</option>
           <option value="EUR">EUR — € (Euro)</option>
         </select>
       </div>
-      <button class="btn btn-primary w-full" id="ob-next-1">Continue →</button>
+      <button class="btn btn-primary w-full" id="ob-next-1" data-i18n="btn_continue">Continue →</button>
     </div>
     <div class="onboarding-step" id="ob-step-2">
-      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:7px">Starting Year</h2>
-      <p class="text-muted text-sm" style="margin-bottom:22px">Which year do you want to start tracking?</p>
-      <div class="form-group"><label class="form-label">Year</label><input type="number" class="form-input" id="ob-year" placeholder="2025" min="2000" max="2100"></div>
-      <div class="flex gap-8"><button class="btn btn-ghost w-full" id="ob-back-2">← Back</button><button class="btn btn-primary w-full" id="ob-next-2">Continue →</button></div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:7px" data-i18n="ob_year_title">Starting Year</h2>
+      <p class="text-muted text-sm" style="margin-bottom:22px" data-i18n="ob_year_subtitle">Which year do you want to start tracking?</p>
+      <div class="form-group"><label class="form-label" data-i18n="ob_year_label">Year</label><input type="number" class="form-input" id="ob-year" placeholder="2025" min="2000" max="2100"></div>
+      <div class="flex gap-8"><button class="btn btn-ghost w-full" id="ob-back-2" data-i18n="btn_back">← Back</button><button class="btn btn-primary w-full" id="ob-next-2" data-i18n="btn_continue">Continue →</button></div>
     </div>
     <div class="onboarding-step" id="ob-step-3">
-      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:7px">Monthly Salary</h2>
-      <p class="text-muted text-sm" style="margin-bottom:22px">What's your take-home salary? (You can edit anytime)</p>
-      <div class="form-group"><label class="form-label">Monthly Salary</label><input type="number" class="form-input" id="ob-salary" placeholder="4000" min="0"></div>
-      <div class="flex gap-8"><button class="btn btn-ghost w-full" id="ob-back-3">← Back</button><button class="btn btn-primary w-full" id="ob-finish">Start Finflow 🚀</button></div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:7px" data-i18n="ob_salary_title">Monthly Salary</h2>
+      <p class="text-muted text-sm" style="margin-bottom:22px" data-i18n="ob_salary_subtitle">What's your take-home salary? (You can edit anytime)</p>
+      <div class="form-group"><label class="form-label" data-i18n="ob_salary_label">Monthly Salary</label><input type="number" class="form-input" id="ob-salary" placeholder="4000" min="0"></div>
+      <div class="flex gap-8"><button class="btn btn-ghost w-full" id="ob-back-3" data-i18n="btn_back">← Back</button><button class="btn btn-primary w-full" id="ob-finish" data-i18n="btn_start">Start Finflow 🚀</button></div>
     </div>
   </div>
 </div>
@@ -542,27 +551,27 @@ section.page-section[data-page="investments"],
 <!-- ========== SETTINGS MODAL ========== -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal">
-    <div class="modal-header"><h2 class="modal-title">Settings</h2><button class="btn-icon" id="settings-close"><i data-lucide="x"></i></button></div>
-    <div class="form-group"><label class="form-label">App Name</label><input type="text" class="form-input" id="s-appname" placeholder="Finflow"></div>
-    <div class="form-group"><label class="form-label">Currency</label>
+    <div class="modal-header"><h2 class="modal-title" data-i18n="nav_settings">Settings</h2><button class="btn-icon" id="settings-close"><i data-lucide="x"></i></button></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_app_name">App Name</label><input type="text" class="form-input" id="s-appname" placeholder="Finflow"></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_currency">Currency</label>
       <select class="form-input" id="s-currency">
         <option value="BRL">BRL — R$</option><option value="USD">USD — $</option><option value="EUR">EUR — €</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-label">Theme</label>
-      <select class="form-input" id="s-theme"><option value="dark">Dark</option><option value="light">Light</option></select>
+    <div class="form-group"><label class="form-label" data-i18n="form_theme">Theme</label>
+      <select class="form-input" id="s-theme"><option value="dark" data-i18n-opt="theme_dark">Dark</option><option value="light" data-i18n-opt="theme_light">Light</option></select>
     </div>
     <div class="form-group" style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
-      <label class="form-label">Data Management</label>
+      <label class="form-label" data-i18n="form_data_mgmt">Data Management</label>
       <div class="flex gap-8 mt-8">
-        <button class="btn btn-ghost btn-sm" id="s-export"><i data-lucide="download"></i>Export JSON</button>
-        <label class="btn btn-ghost btn-sm" style="cursor:pointer"><i data-lucide="upload"></i>Import JSON<input type="file" id="s-import-file" accept=".json" style="display:none"></label>
+        <button class="btn btn-ghost btn-sm" id="s-export"><i data-lucide="download"></i><span data-i18n="btn_export">Export JSON</span></button>
+        <label class="btn btn-ghost btn-sm" style="cursor:pointer"><i data-lucide="upload"></i><span data-i18n="btn_import">Import JSON</span><input type="file" id="s-import-file" accept=".json" style="display:none"></label>
       </div>
     </div>
-    <div class="form-group"><button class="btn btn-danger btn-sm" id="s-reset"><i data-lucide="trash-2"></i>Reset All Data</button></div>
+    <div class="form-group"><button class="btn btn-danger btn-sm" id="s-reset"><i data-lucide="trash-2"></i><span data-i18n="btn_reset">Reset All Data</span></button></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" id="settings-cancel">Cancel</button>
-      <button class="btn btn-primary" id="settings-save">Save Settings</button>
+      <button class="btn btn-ghost" id="settings-cancel" data-i18n="btn_cancel">Cancel</button>
+      <button class="btn btn-primary" id="settings-save" data-i18n="btn_save_settings">Save Settings</button>
     </div>
   </div>
 </div>
@@ -570,28 +579,28 @@ section.page-section[data-page="investments"],
 <!-- ========== GOAL MODAL ========== -->
 <div class="modal-overlay" id="goal-modal">
   <div class="modal">
-    <div class="modal-header"><h2 class="modal-title" id="goal-modal-title">New Goal</h2><button class="btn-icon" id="goal-modal-close"><i data-lucide="x"></i></button></div>
+    <div class="modal-header"><h2 class="modal-title" id="goal-modal-title" data-i18n="modal_new_goal">New Goal</h2><button class="btn-icon" id="goal-modal-close"><i data-lucide="x"></i></button></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Goal Name *</label><input type="text" class="form-input" id="g-name" placeholder="e.g. Emergency Fund"></div>
-      <div class="form-group"><label class="form-label">Type</label>
+      <div class="form-group"><label class="form-label" data-i18n="form_goal_name">Goal Name *</label><input type="text" class="form-input" id="g-name" data-i18n-placeholder="placeholder_goal_name" placeholder="e.g. Emergency Fund"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_type">Type</label>
         <select class="form-input" id="g-type">
-          <option value="short">Short-term (≤ 2yr)</option>
-          <option value="medium">Medium-term (2–5yr)</option>
-          <option value="long">Long-term (5yr+)</option>
+          <option value="short" data-i18n-opt="goals_short">Short-term (≤ 2yr)</option>
+          <option value="medium" data-i18n-opt="goals_medium">Medium-term (2–5yr)</option>
+          <option value="long" data-i18n-opt="goals_long">Long-term (5yr+)</option>
         </select>
       </div>
     </div>
-    <div class="form-group"><label class="form-label">Reason / Motivation</label><input type="text" class="form-input" id="g-reason" placeholder="Why this goal matters"></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_motivation">Reason / Motivation</label><input type="text" class="form-input" id="g-reason" data-i18n-placeholder="placeholder_motivation" placeholder="Why this goal matters"></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Target Amount *</label><input type="number" class="form-input" id="g-amount" placeholder="10000" min="0"></div>
-      <div class="form-group"><label class="form-label">Deadline (Month/Year)</label><input type="month" class="form-input" id="g-deadline"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_target_amount">Target Amount *</label><input type="number" class="form-input" id="g-amount" placeholder="10000" min="0"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_deadline">Deadline (Month/Year)</label><input type="month" class="form-input" id="g-deadline"></div>
     </div>
-    <div class="form-group"><label class="form-label">Progress (amount saved)</label><input type="number" class="form-input" id="g-progress" placeholder="0" min="0"></div>
-    <div class="form-group"><label class="form-label">Action Plan</label><textarea class="form-input" id="g-plan" placeholder="Steps to achieve this goal..." rows="3" style="resize:vertical"></textarea></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_progress_saved">Progress (amount saved)</label><input type="number" class="form-input" id="g-progress" placeholder="0" min="0"></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_action_plan">Action Plan</label><textarea class="form-input" id="g-plan" data-i18n-placeholder="placeholder_action_plan" placeholder="Steps to achieve this goal..." rows="3" style="resize:vertical"></textarea></div>
     <input type="hidden" id="g-edit-id">
     <div class="modal-footer">
-      <button class="btn btn-ghost" id="goal-cancel">Cancel</button>
-      <button class="btn btn-primary" id="goal-save">Save Goal</button>
+      <button class="btn btn-ghost" id="goal-cancel" data-i18n="btn_cancel">Cancel</button>
+      <button class="btn btn-primary" id="goal-save" data-i18n="btn_save_goal">Save Goal</button>
     </div>
   </div>
 </div>
@@ -599,27 +608,27 @@ section.page-section[data-page="investments"],
 <!-- ========== DEBT MODAL ========== -->
 <div class="modal-overlay" id="debt-modal">
   <div class="modal">
-    <div class="modal-header"><h2 class="modal-title" id="debt-modal-title">Add Debt</h2><button class="btn-icon" id="debt-modal-close"><i data-lucide="x"></i></button></div>
+    <div class="modal-header"><h2 class="modal-title" id="debt-modal-title" data-i18n="modal_add_debt">Add Debt</h2><button class="btn-icon" id="debt-modal-close"><i data-lucide="x"></i></button></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Creditor *</label><input type="text" class="form-input" id="d-creditor" placeholder="Bank, person, etc."></div>
-      <div class="form-group"><label class="form-label">Start Date</label><input type="date" class="form-input" id="d-start"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_creditor">Creditor *</label><input type="text" class="form-input" id="d-creditor" data-i18n-placeholder="placeholder_creditor" placeholder="Bank, person, etc."></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_start_date">Start Date</label><input type="date" class="form-input" id="d-start"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Installment *</label><input type="number" class="form-input" id="d-installment" placeholder="300" min="0"></div>
-      <div class="form-group"><label class="form-label"># Installments *</label><input type="number" class="form-input" id="d-num" placeholder="12" min="1"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_installment">Installment *</label><input type="number" class="form-input" id="d-installment" placeholder="300" min="0"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_num_installments"># Installments *</label><input type="number" class="form-input" id="d-num" placeholder="12" min="1"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Interest Rate (%/mo)</label><input type="number" class="form-input" id="d-rate" placeholder="0" min="0" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Paid Installments</label><input type="number" class="form-input" id="d-paid" placeholder="0" min="0"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_interest_rate">Interest Rate (%/mo)</label><input type="number" class="form-input" id="d-rate" placeholder="0" min="0" step="0.01"></div>
+      <div class="form-group"><label class="form-label" data-i18n="form_paid_installments">Paid Installments</label><input type="number" class="form-input" id="d-paid" placeholder="0" min="0"></div>
     </div>
-    <div class="form-group"><label class="form-label">Reason</label><input type="text" class="form-input" id="d-reason" placeholder="What was this for?"></div>
-    <div class="form-group"><label class="form-label">Status</label>
-      <select class="form-input" id="d-status"><option value="active">Active</option><option value="paid">Paid Off</option></select>
+    <div class="form-group"><label class="form-label" data-i18n="th_reason">Reason</label><input type="text" class="form-input" id="d-reason" data-i18n-placeholder="placeholder_reason" placeholder="What was this for?"></div>
+    <div class="form-group"><label class="form-label" data-i18n="th_status">Status</label>
+      <select class="form-input" id="d-status"><option value="active" data-i18n-opt="status_active">Active</option><option value="paid" data-i18n-opt="status_paid_off">Paid Off</option></select>
     </div>
     <input type="hidden" id="d-edit-id">
     <div class="modal-footer">
-      <button class="btn btn-ghost" id="debt-cancel">Cancel</button>
-      <button class="btn btn-primary" id="debt-save">Save Debt</button>
+      <button class="btn btn-ghost" id="debt-cancel" data-i18n="btn_cancel">Cancel</button>
+      <button class="btn btn-primary" id="debt-save" data-i18n="btn_save_debt">Save Debt</button>
     </div>
   </div>
 </div>
@@ -627,13 +636,13 @@ section.page-section[data-page="investments"],
 <!-- ========== ADD ROW MODAL ========== -->
 <div class="modal-overlay" id="addrow-modal">
   <div class="modal" style="max-width:360px">
-    <div class="modal-header"><h2 class="modal-title">Add Custom Row</h2><button class="btn-icon" id="addrow-close"><i data-lucide="x"></i></button></div>
-    <div class="form-group"><label class="form-label">Row Label *</label><input type="text" class="form-input" id="addrow-label" placeholder="e.g. Insurance, Bonus..."></div>
+    <div class="modal-header"><h2 class="modal-title" data-i18n="modal_add_row">Add Custom Row</h2><button class="btn-icon" id="addrow-close"><i data-lucide="x"></i></button></div>
+    <div class="form-group"><label class="form-label" data-i18n="form_row_label">Row Label *</label><input type="text" class="form-input" id="addrow-label" data-i18n-placeholder="placeholder_row_label" placeholder="e.g. Insurance, Bonus..."></div>
     <input type="hidden" id="addrow-module">
     <input type="hidden" id="addrow-section">
     <div class="modal-footer">
-      <button class="btn btn-ghost" id="addrow-cancel">Cancel</button>
-      <button class="btn btn-primary" id="addrow-confirm">Add Row</button>
+      <button class="btn btn-ghost" id="addrow-cancel" data-i18n="btn_cancel">Cancel</button>
+      <button class="btn btn-primary" id="addrow-confirm" data-i18n="btn_add_row">Add Row</button>
     </div>
   </div>
 </div>
@@ -648,6 +657,325 @@ section.page-section[data-page="investments"],
 
 <script>
 'use strict';
+
+// ============================================================
+// I18N — TRANSLATIONS
+// ============================================================
+let CL = 'en'; // current language
+
+const T = {
+  en: {
+    // App
+    app_tagline:'Your money. Your clarity.',
+    // Nav
+    nav_dashboard:'Dashboard', nav_personal:'Personal Budget', nav_weekly:'Weekly Control',
+    nav_business:'Business Budget', nav_investments:'Investments', nav_debts:'Debts',
+    nav_goals:'Goals', nav_goals_long:'Financial Goals', nav_settings:'Settings',
+    mobile_home:'Home', mobile_personal:'Personal', mobile_weekly:'Weekly', mobile_invest:'Invest',
+    // Topbar
+    sync_title:'Cloud sync status', sync_idle:'Synced', sync_pending:'Pending…',
+    sync_syncing:'Saving…', sync_saved:'Saved', sync_error:'Sync error', sync_offline:'Offline',
+    btn_export:'Export', btn_import:'Import JSON',
+    // Dashboard
+    alert_debts:'You have active debts.',
+    kpi_income:'Total Income', kpi_income_sub:'Personal',
+    kpi_expenses:'Total Expenses', kpi_expenses_sub:'All categories',
+    kpi_balance:'Net Balance', kpi_balance_sub:'Income − Expenses',
+    kpi_invested:'Invested', kpi_invested_sub:'This year total',
+    kpi_debt:'Active Debt', kpi_debt_sub:'Total remaining',
+    rule_title:'50/30/20 Rule', rule_basis:'Based on full year',
+    rule_essential:'Essential Expenses', rule_essential_target:'Target: ≤ 50% of income',
+    rule_non_essential:'Non-Essential', rule_non_essential_target:'Target: ≤ 30% of income',
+    rule_investments:'Investments', rule_investments_target:'Target: ≥ 20% of income',
+    chart_income_expenses:'Monthly Income vs Expenses', chart_breakdown:'Expense Breakdown',
+    chart_label_income:'Income', chart_label_expenses:'Expenses', chart_label_net:'Net',
+    chart_label_essential:'Essential', chart_label_non_essential:'Non-Essential',
+    chart_label_credit_cards:'Credit Cards', chart_label_investments:'Investments',
+    // Weekly
+    weekly_fixed_bills:'Fixed Bills', btn_add_bill:'Add Bill',
+    weekly_variable_expenses:'Variable Expenses', btn_add_category:'Add Category',
+    th_description:'Description', th_amount:'Amount', th_due_week:'Due Week',
+    th_status:'Status', th_category:'Category', th_limit:'Limit',
+    th_total:'Total', th_left:'Left',
+    weekly_empty_bills:'No fixed bills. Add some!',
+    weekly_empty_cats:'No categories. Add one!',
+    weekly_status_paid:'Paid ✓', weekly_status_overdue:'Overdue ⚠', weekly_status_pending:'Pending ⏳',
+    // Debts
+    btn_add_debt:'Add Debt', th_creditor:'Creditor', th_start:'Start',
+    th_installment:'Installment', th_num_inst:'# Inst.', th_rate:'Rate',
+    th_paid:'Paid', th_progress:'Progress', th_reason:'Reason',
+    debt_active:'Active Debts', debt_active_count:'debt(s) active',
+    debt_paid_off:'Paid Off', debt_cleared_count:'debt(s) cleared',
+    debt_total:'Total Debts', debt_all_time:'all time',
+    empty_debts:'No debts! 🎉', status_active:'Active', status_paid_off:'Paid Off',
+    // Goals
+    btn_add_goal:'Add Goal',
+    goals_short:'Short-term (≤ 2yr)', goals_medium:'Medium-term (2–5yr)', goals_long:'Long-term (5yr+)',
+    chip_short:'Short', chip_medium:'Medium', chip_long:'Long',
+    empty_goals_title:'No goals yet', empty_goals_msg:'Add your first financial goal!',
+    goal_target:'Target', goal_deadline:'Deadline', goal_monthly_need:'Monthly Need',
+    goal_saved:'Saved', goal_progress:'Progress',
+    // Budget grid
+    grid_category:'Category', grid_annual:'Annual',
+    btn_copy:'⎘ Copy', btn_paste:'⏋ Paste', btn_add_section:'+ Add',
+    // Personal sections
+    sec_income:'INCOME (+)', sec_total_income:'Total Income',
+    sec_essential:'ESSENTIAL EXPENSES (−)', chip_essential:'Target ≤50%',
+    sub_essential:'Subtotal Essential', pct_income:'% of Income',
+    sec_non_essential:'NON-ESSENTIAL (−)', chip_non_essential:'Target ≤30%',
+    sub_non_essential:'Subtotal Non-Essential',
+    sec_credit_cards:'CREDIT CARDS (−)', sub_credit_cards:'Total Credit Cards',
+    sec_investments_p:'INVESTMENTS (→)', chip_investments:'Target ≥20%',
+    sec_surplus:'Monthly Surplus (=)',
+    // Business sections
+    sec_revenue:'REVENUE (+)', sub_revenue:'Total Revenue',
+    sec_expenses_b:'EXPENSES (−)', sub_expenses:'Total Expenses',
+    sec_operating_result:'Operating Result (=)',
+    // Investments section
+    invest_total_invested:'Total Invested', invest_all_time:'All time (this year)',
+    invest_fixed_income:'Fixed Income', invest_pct_portfolio:'% of portfolio',
+    invest_variable_income:'Variable Income',
+    sec_fixed_income:'FIXED INCOME', sub_fixed_income:'Fixed Income Total',
+    sec_variable_income:'VARIABLE INCOME', sub_variable_income:'Variable Income Total',
+    // Settings modal
+    form_app_name:'App Name', form_currency:'Currency', form_theme:'Theme',
+    theme_dark:'Dark', theme_light:'Light',
+    form_data_mgmt:'Data Management',
+    btn_export_json:'Export JSON', btn_import_json:'Import JSON',
+    btn_reset:'Reset All Data', btn_cancel:'Cancel',
+    btn_save_settings:'Save Settings',
+    // Goal modal
+    modal_new_goal:'New Goal', modal_edit_goal:'Edit Goal',
+    form_goal_name:'Goal Name *', placeholder_goal_name:'e.g. Emergency Fund',
+    form_type:'Type', form_motivation:'Reason / Motivation',
+    placeholder_motivation:'Why this goal matters',
+    form_target_amount:'Target Amount *', form_deadline:'Deadline (Month/Year)',
+    form_progress_saved:'Progress (amount saved)',
+    form_action_plan:'Action Plan', placeholder_action_plan:'Steps to achieve this goal...',
+    btn_save_goal:'Save Goal',
+    // Debt modal
+    modal_add_debt:'Add Debt', modal_edit_debt:'Edit Debt',
+    form_creditor:'Creditor *', placeholder_creditor:'Bank, person, etc.',
+    form_start_date:'Start Date', form_installment:'Installment *',
+    form_num_installments:'# Installments *', form_interest_rate:'Interest Rate (%/mo)',
+    form_paid_installments:'Paid Installments',
+    placeholder_reason:'What was this for?',
+    btn_save_debt:'Save Debt',
+    // Add row modal
+    modal_add_row:'Add Custom Row', form_row_label:'Row Label *',
+    placeholder_row_label:'e.g. Insurance, Bonus...',
+    btn_add_row:'Add Row',
+    // Onboarding
+    ob_welcome:'Welcome to', ob_subtitle:'Your personal finance command center. Set up in 3 quick steps.',
+    ob_year_title:'Starting Year', ob_year_subtitle:'Which year do you want to start tracking?',
+    ob_year_label:'Year', ob_salary_title:'Monthly Salary',
+    ob_salary_subtitle:"What's your take-home salary? (You can edit anytime)",
+    ob_salary_label:'Monthly Salary', btn_continue:'Continue →', btn_back:'← Back',
+    btn_start:'Start Finflow 🚀',
+    // Page titles (topbar)
+    page_dashboard:'Dashboard', page_personal:'Personal Budget', page_weekly:'Weekly Control',
+    page_debts:'Debts', page_goals:'Goals',
+    // Toasts & feedback
+    toast_cloud_unavailable:'Cloud unavailable — using local data.',
+    toast_syncing:'Syncing local data to cloud…',
+    toast_error_loading:'Error loading data. Starting fresh.',
+    toast_storage_full:'Local storage full! Export your data.',
+    toast_sync_failed:'Cloud sync failed. Data saved locally.',
+    toast_row_removed:'Row removed', toast_status_updated:'Status updated',
+    toast_bill_removed:'Bill removed', toast_cat_removed:'Category removed',
+    toast_bill_added:'Bill added', toast_cat_added:'Category added',
+    toast_fill_required:'Fill in required fields',
+    toast_debt_saved:'Debt saved', toast_goal_name_req:'Goal name is required',
+    toast_goal_saved:'Goal saved', toast_settings_saved:'Settings saved',
+    toast_data_exported:'Data exported', toast_data_imported:'Data imported successfully',
+    toast_invalid_backup:'Invalid backup file',
+    toast_row_label_req:'Row label is required', toast_row_added:'Row added',
+    toast_data_reset:'Data reset', toast_copy_cleared:'Copy cleared',
+    toast_debt_deleted:'Debt deleted', toast_goal_deleted:'Goal deleted',
+    toast_nothing_copied:'Nothing copied for this module',
+    toast_same_col:'Source and target are the same column',
+    // Confirm dialogs
+    confirm_remove_bill:'Remove this bill?', confirm_remove_cat:'Remove this category?',
+    confirm_reset_1:'Reset ALL data? This cannot be undone.',
+    confirm_reset_2:'Are you sure? All data will be lost.',
+    confirm_delete_debt:'Delete this debt?', confirm_delete_goal:'Delete this goal?',
+    // Prompts
+    prompt_bill_desc:'Bill description:', prompt_amount:'Amount:',
+    prompt_due_week:'Due week (1-5):', prompt_cat_name:'Category name:',
+    prompt_monthly_limit:'Monthly limit:',
+    // Months
+    months:['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+    months_full:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  },
+  nl: {
+    // App
+    app_tagline:'Jouw geld. Jouw overzicht.',
+    // Nav
+    nav_dashboard:'Dashboard', nav_personal:'Persoonlijk Budget', nav_weekly:'Weekoverzicht',
+    nav_business:'Zakelijk Budget', nav_investments:'Investeringen', nav_debts:'Schulden',
+    nav_goals:'Doelen', nav_goals_long:'Financiële Doelen', nav_settings:'Instellingen',
+    mobile_home:'Home', mobile_personal:'Persoonlijk', mobile_weekly:'Week', mobile_invest:'Invest',
+    // Topbar
+    sync_title:'Cloud synchronisatiestatus', sync_idle:'Gesynchroniseerd', sync_pending:'Wachten…',
+    sync_syncing:'Opslaan…', sync_saved:'Opgeslagen', sync_error:'Synchronisatiefout', sync_offline:'Offline',
+    btn_export:'Exporteer', btn_import:'Importeer JSON',
+    // Dashboard
+    alert_debts:'Je hebt actieve schulden.',
+    kpi_income:'Totaal Inkomen', kpi_income_sub:'Persoonlijk',
+    kpi_expenses:'Totale Uitgaven', kpi_expenses_sub:'Alle categorieën',
+    kpi_balance:'Netto Saldo', kpi_balance_sub:'Inkomen − Uitgaven',
+    kpi_invested:'Geïnvesteerd', kpi_invested_sub:'Totaal dit jaar',
+    kpi_debt:'Actieve Schuld', kpi_debt_sub:'Totaal resterend',
+    rule_title:'50/30/20 Regel', rule_basis:'Gebaseerd op heel jaar',
+    rule_essential:'Vaste Uitgaven', rule_essential_target:'Doel: ≤ 50% van inkomen',
+    rule_non_essential:'Niet-essentieel', rule_non_essential_target:'Doel: ≤ 30% van inkomen',
+    rule_investments:'Investeringen', rule_investments_target:'Doel: ≥ 20% van inkomen',
+    chart_income_expenses:'Maandelijks Inkomen vs Uitgaven', chart_breakdown:'Uitgavenverdeling',
+    chart_label_income:'Inkomen', chart_label_expenses:'Uitgaven', chart_label_net:'Netto',
+    chart_label_essential:'Essentieel', chart_label_non_essential:'Niet-essentieel',
+    chart_label_credit_cards:'Creditkaarten', chart_label_investments:'Investeringen',
+    // Weekly
+    weekly_fixed_bills:'Vaste Lasten', btn_add_bill:'Rekening toevoegen',
+    weekly_variable_expenses:'Variabele Uitgaven', btn_add_category:'Categorie toevoegen',
+    th_description:'Omschrijving', th_amount:'Bedrag', th_due_week:'Betaalweek',
+    th_status:'Status', th_category:'Categorie', th_limit:'Limiet',
+    th_total:'Totaal', th_left:'Over',
+    weekly_empty_bills:'Geen vaste lasten. Voeg er wat toe!',
+    weekly_empty_cats:'Geen categorieën. Voeg er een toe!',
+    weekly_status_paid:'Betaald ✓', weekly_status_overdue:'Achterstallig ⚠', weekly_status_pending:'In behandeling ⏳',
+    // Debts
+    btn_add_debt:'Schuld toevoegen', th_creditor:'Schuldeiser', th_start:'Start',
+    th_installment:'Termijn', th_num_inst:'# Term.', th_rate:'Rente',
+    th_paid:'Betaald', th_progress:'Voortgang', th_reason:'Reden',
+    debt_active:'Actieve Schulden', debt_active_count:'schuld(en) actief',
+    debt_paid_off:'Afbetaald', debt_cleared_count:'schuld(en) afbetaald',
+    debt_total:'Totale Schulden', debt_all_time:'totaal',
+    empty_debts:'Geen schulden! 🎉', status_active:'Actief', status_paid_off:'Afbetaald',
+    // Goals
+    btn_add_goal:'Doel toevoegen',
+    goals_short:'Korte termijn (≤ 2jr)', goals_medium:'Middellange termijn (2–5jr)', goals_long:'Lange termijn (5jr+)',
+    chip_short:'Kort', chip_medium:'Middel', chip_long:'Lang',
+    empty_goals_title:'Nog geen doelen', empty_goals_msg:'Voeg je eerste financiële doel toe!',
+    goal_target:'Doel', goal_deadline:'Deadline', goal_monthly_need:'Maandelijks nodig',
+    goal_saved:'Gespaard', goal_progress:'Voortgang',
+    // Budget grid
+    grid_category:'Categorie', grid_annual:'Jaarlijks',
+    btn_copy:'⎘ Kopieer', btn_paste:'⏋ Plak', btn_add_section:'+ Toevoegen',
+    // Personal sections
+    sec_income:'INKOMEN (+)', sec_total_income:'Totaal Inkomen',
+    sec_essential:'VASTE UITGAVEN (−)', chip_essential:'Doel ≤50%',
+    sub_essential:'Subtotaal Essentieel', pct_income:'% van Inkomen',
+    sec_non_essential:'NIET-ESSENTIEEL (−)', chip_non_essential:'Doel ≤30%',
+    sub_non_essential:'Subtotaal Niet-essentieel',
+    sec_credit_cards:'CREDITKAARTEN (−)', sub_credit_cards:'Totaal Creditkaarten',
+    sec_investments_p:'INVESTERINGEN (→)', chip_investments:'Doel ≥20%',
+    sec_surplus:'Maandelijks Overschot (=)',
+    // Business sections
+    sec_revenue:'OMZET (+)', sub_revenue:'Totale Omzet',
+    sec_expenses_b:'UITGAVEN (−)', sub_expenses:'Totale Uitgaven',
+    sec_operating_result:'Bedrijfsresultaat (=)',
+    // Investments section
+    invest_total_invested:'Totaal Geïnvesteerd', invest_all_time:'Alles (dit jaar)',
+    invest_fixed_income:'Vaste Inkomsten', invest_pct_portfolio:'% van portfolio',
+    invest_variable_income:'Variabele Inkomsten',
+    sec_fixed_income:'VASTE INKOMSTEN', sub_fixed_income:'Totaal Vaste Inkomsten',
+    sec_variable_income:'VARIABELE INKOMSTEN', sub_variable_income:'Totaal Variabele Inkomsten',
+    // Settings modal
+    form_app_name:'App naam', form_currency:'Valuta', form_theme:'Thema',
+    theme_dark:'Donker', theme_light:'Licht',
+    form_data_mgmt:'Gegevensbeheer',
+    btn_export_json:'Exporteer JSON', btn_import_json:'Importeer JSON',
+    btn_reset:'Alle gegevens wissen', btn_cancel:'Annuleren',
+    btn_save_settings:'Instellingen opslaan',
+    // Goal modal
+    modal_new_goal:'Nieuw Doel', modal_edit_goal:'Doel bewerken',
+    form_goal_name:'Doelnaam *', placeholder_goal_name:'bijv. Noodfonds',
+    form_type:'Type', form_motivation:'Reden / Motivatie',
+    placeholder_motivation:'Waarom dit doel belangrijk is',
+    form_target_amount:'Doelbedrag *', form_deadline:'Deadline (Maand/Jaar)',
+    form_progress_saved:'Voortgang (gespaard bedrag)',
+    form_action_plan:'Actieplan', placeholder_action_plan:'Stappen om dit doel te bereiken...',
+    btn_save_goal:'Doel opslaan',
+    // Debt modal
+    modal_add_debt:'Schuld toevoegen', modal_edit_debt:'Schuld bewerken',
+    form_creditor:'Schuldeiser *', placeholder_creditor:'Bank, persoon, etc.',
+    form_start_date:'Startdatum', form_installment:'Termijn *',
+    form_num_installments:'# Termijnen *', form_interest_rate:'Rente (%/mnd)',
+    form_paid_installments:'Betaalde termijnen',
+    placeholder_reason:'Waarvoor was dit?',
+    btn_save_debt:'Schuld opslaan',
+    // Add row modal
+    modal_add_row:'Rij toevoegen', form_row_label:'Rijlabel *',
+    placeholder_row_label:'bijv. Verzekering, Bonus...',
+    btn_add_row:'Rij toevoegen',
+    // Onboarding
+    ob_welcome:'Welkom bij', ob_subtitle:'Jouw persoonlijke financiële controle. In 3 snelle stappen ingesteld.',
+    ob_year_title:'Startjaar', ob_year_subtitle:'In welk jaar wil je beginnen?',
+    ob_year_label:'Jaar', ob_salary_title:'Maandsalaris',
+    ob_salary_subtitle:'Wat is je netto maandsalaris? (Je kunt dit altijd aanpassen)',
+    ob_salary_label:'Maandsalaris', btn_continue:'Verder →', btn_back:'← Terug',
+    btn_start:'Start Finflow 🚀',
+    // Page titles
+    page_dashboard:'Dashboard', page_personal:'Persoonlijk Budget', page_weekly:'Weekoverzicht',
+    page_debts:'Schulden', page_goals:'Doelen',
+    // Toasts & feedback
+    toast_cloud_unavailable:'Cloud niet beschikbaar — lokale gegevens worden gebruikt.',
+    toast_syncing:'Lokale gegevens synchroniseren naar cloud…',
+    toast_error_loading:'Fout bij laden van gegevens. Opnieuw beginnen.',
+    toast_storage_full:'Lokale opslag vol! Exporteer je gegevens.',
+    toast_sync_failed:'Cloud-synchronisatie mislukt. Gegevens lokaal opgeslagen.',
+    toast_row_removed:'Rij verwijderd', toast_status_updated:'Status bijgewerkt',
+    toast_bill_removed:'Rekening verwijderd', toast_cat_removed:'Categorie verwijderd',
+    toast_bill_added:'Rekening toegevoegd', toast_cat_added:'Categorie toegevoegd',
+    toast_fill_required:'Vul de verplichte velden in',
+    toast_debt_saved:'Schuld opgeslagen', toast_goal_name_req:'Doelnaam is verplicht',
+    toast_goal_saved:'Doel opgeslagen', toast_settings_saved:'Instellingen opgeslagen',
+    toast_data_exported:'Gegevens geëxporteerd', toast_data_imported:'Gegevens succesvol geïmporteerd',
+    toast_invalid_backup:'Ongeldig back-upbestand',
+    toast_row_label_req:'Rijlabel is verplicht', toast_row_added:'Rij toegevoegd',
+    toast_data_reset:'Gegevens gewist', toast_copy_cleared:'Kopieer gewist',
+    toast_debt_deleted:'Schuld verwijderd', toast_goal_deleted:'Doel verwijderd',
+    toast_nothing_copied:'Niets gekopieerd voor deze module',
+    toast_same_col:'Bron en doel zijn dezelfde kolom',
+    // Confirm dialogs
+    confirm_remove_bill:'Deze rekening verwijderen?', confirm_remove_cat:'Deze categorie verwijderen?',
+    confirm_reset_1:'Alle gegevens wissen? Dit kan niet ongedaan worden gemaakt.',
+    confirm_reset_2:'Weet je het zeker? Alle gegevens gaan verloren.',
+    confirm_delete_debt:'Deze schuld verwijderen?', confirm_delete_goal:'Dit doel verwijderen?',
+    // Prompts
+    prompt_bill_desc:'Omschrijving rekening:', prompt_amount:'Bedrag:',
+    prompt_due_week:'Betaalweek (1-5):', prompt_cat_name:'Categorienaam:',
+    prompt_monthly_limit:'Maandelijks limiet:',
+    // Months
+    months:['JAN','FEB','MRT','APR','MEI','JUN','JUL','AUG','SEP','OKT','NOV','DEC'],
+    months_full:['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'],
+  }
+};
+
+function t(key) { return (T[CL] && T[CL][key]) || T.en[key] || key; }
+
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  document.querySelectorAll('[data-i18n-opt]').forEach(el => { el.textContent = t(el.dataset.i18nOpt); });
+  // Update lang toggle active state
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === CL));
+  // Update topbar page title
+  const pageMap = { dashboard:'page_dashboard', personal:'page_personal', weekly:'page_weekly', debts:'page_debts', goals:'page_goals', business:'nav_business', investments:'nav_investments' };
+  const titleEl = document.getElementById('topbar-page-title');
+  if(titleEl && CS) titleEl.textContent = t(pageMap[CS] || 'page_dashboard');
+  // Update html lang attribute
+  document.documentElement.lang = CL;
+}
+
+function setLang(lang) {
+  CL = lang;
+  if(D.settings) D.settings.lang = lang;
+  saveData();
+  applyI18n();
+  renderSection(CS);
+}
 
 // ============================================================
 // CONSTANTS
@@ -679,9 +1007,9 @@ function setSyncStatus(state) {
   if(!badge || !text) return;
   badge.className = 'sync-badge sync-' + state;
   const icons = { idle:'cloud', pending:'cloud', syncing:'cloud-upload', saved:'cloud-check', error:'cloud-off', offline:'wifi-off' };
-  const labels = { idle:'Synced', pending:'Pending…', syncing:'Saving…', saved:'Saved', error:'Sync error', offline:'Offline' };
+  const labelKeys = { idle:'sync_idle', pending:'sync_pending', syncing:'sync_syncing', saved:'sync_saved', error:'sync_error', offline:'sync_offline' };
   if(icon) { icon.setAttribute('data-lucide', icons[state]||'cloud'); lucide.createIcons({ el: badge }); }
-  text.textContent = labels[state] || state;
+  text.textContent = t(labelKeys[state] || state);
 }
 
 // ============================================================
@@ -711,7 +1039,7 @@ async function loadData() {
     }
   } catch(e) {
     // Network error or timeout — fall through to localStorage
-    showToast('Cloud unavailable — using local data.', 'warning', 4000);
+    showToast(t('toast_cloud_unavailable'), 'warning', 4000);
   }
 
   // 2 — fall back to localStorage
@@ -721,7 +1049,7 @@ async function loadData() {
       D = JSON.parse(raw);
       if (cloudReachable) {
         // Blob was empty: push existing local data to cloud now
-        showToast('Syncing local data to cloud…', 'info', 3000);
+        showToast(t('toast_syncing'), 'info', 3000);
         setSyncStatus('pending');
         setTimeout(pushToBlob, 300);
       } else {
@@ -729,7 +1057,7 @@ async function loadData() {
       }
       return true;
     }
-  } catch(e) { showToast('Error loading data. Starting fresh.','error'); }
+  } catch(e) { showToast(t('toast_error_loading'),'error'); }
 
   setSyncStatus('idle');
   return false;
@@ -742,7 +1070,7 @@ function saveData() {
   // Always write localStorage immediately (zero latency)
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(D)); }
   catch(e) {
-    if(e.name === 'QuotaExceededError') showToast('Local storage full! Export your data.','warning');
+    if(e.name === 'QuotaExceededError') showToast(t('toast_storage_full'),'warning');
   }
   // Debounce cloud push — fires 1.5 s after the last change
   setSyncStatus('pending');
@@ -763,7 +1091,7 @@ async function pushToBlob() {
     setTimeout(() => setSyncStatus('idle'), 3000);
   } catch(e) {
     setSyncStatus('error');
-    showToast('Cloud sync failed. Data saved locally.', 'warning', 5000);
+    showToast(t('toast_sync_failed'), 'warning', 5000);
   }
 }
 
@@ -903,8 +1231,8 @@ function showSection(id) {
   CS = id;
   document.querySelectorAll('.page-section').forEach(s => s.classList.toggle('active', s.dataset.page===id));
   document.querySelectorAll('[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page===id));
-  const titles = { dashboard:'Dashboard', personal:'Personal Budget', weekly:'Weekly Control', business:'Business Budget', investments:'Investments', debts:'Debts', goals:'Goals' };
-  document.getElementById('topbar-page-title').textContent = titles[id]||id;
+  const titleKeys = { dashboard:'page_dashboard', personal:'page_personal', weekly:'page_weekly', business:'nav_business', investments:'nav_investments', debts:'page_debts', goals:'page_goals' };
+  document.getElementById('topbar-page-title').textContent = t(titleKeys[id]||id);
   renderSection(id);
 }
 
@@ -1027,11 +1355,11 @@ function renderLineChart(yd) {
   CHARTS.line = new Chart(canvas, {
     type: 'line',
     data: {
-      labels: MONTHS,
+      labels: t('months'),
       datasets: [
-        { label:'Income',   data:income,   borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,.1)',   fill:true, tension:.4, pointRadius:3 },
-        { label:'Expenses', data:expenses, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,.1)',   fill:true, tension:.4, pointRadius:3 },
-        { label:'Net',      data:net,      borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.1)', fill:true, tension:.4, pointRadius:3 }
+        { label:t('chart_label_income'),   data:income,   borderColor:'#22c55e', backgroundColor:'rgba(34,197,94,.1)',   fill:true, tension:.4, pointRadius:3 },
+        { label:t('chart_label_expenses'), data:expenses, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,.1)',   fill:true, tension:.4, pointRadius:3 },
+        { label:t('chart_label_net'),      data:net,      borderColor:'#6c63ff', backgroundColor:'rgba(108,99,255,.1)', fill:true, tension:.4, pointRadius:3 }
       ]
     },
     options: opts
@@ -1052,7 +1380,7 @@ function renderDonutChart(yd) {
   CHARTS.donut = new Chart(canvas, {
     type: 'doughnut',
     data: {
-      labels: ['Essential','Non-Essential','Credit Cards','Investments'],
+      labels: [t('chart_label_essential'),t('chart_label_non_essential'),t('chart_label_credit_cards'),t('chart_label_investments')],
       datasets: [{ data:[ess,nonEss,cards,inv], backgroundColor:['#ef4444','#f59e0b','#8b5cf6','#22c55e'], borderWidth:0, hoverOffset:6 }]
     },
     options: { ...opts, cutout:'68%' }
@@ -1104,25 +1432,25 @@ const GRID_COLS = `<colgroup><col style="min-width:180px;width:200px">${MONTHS.m
 
 // Single unified header row (copy/paste buttons live here — one set per module)
 function makeHeader(module) {
-  const monthThs = MONTHS.map((m,i) => `<th class="month-th">${m}<div class="col-btns">
-    <button class="col-btn copy-col-btn" data-copycol="${i}" data-module="${module}" title="Copy ${m}">⎘ Copy</button>
-    <button class="col-btn paste-col-btn" data-pastecol="${i}" data-module="${module}" title="Paste here" style="display:none">⏋ Paste</button>
+  const monthThs = t('months').map((m,i) => `<th class="month-th">${m}<div class="col-btns">
+    <button class="col-btn copy-col-btn" data-copycol="${i}" data-module="${module}" title="Copy ${m}">${t('btn_copy')}</button>
+    <button class="col-btn paste-col-btn" data-pastecol="${i}" data-module="${module}" title="Paste here" style="display:none">${t('btn_paste')}</button>
   </div></th>`).join('');
-  return `<th>Category</th>${monthThs}<th>Annual</th>`;
+  return `<th>${t('grid_category')}</th>${monthThs}<th>${t('grid_annual')}</th>`;
 }
 
 // Section separator row — first cell has title+add, remaining cells repeat month names
 function sectionRow(icon, title, module, section, badge='') {
-  const monthCells = MONTHS.map(m => `<td class="sec-month">${m}</td>`).join('');
+  const monthCells = t('months').map(m => `<td class="sec-month">${m}</td>`).join('');
   return `<tr class="section-title-row">
     <td style="padding:0">
       <div class="section-title-inner">
         <div class="budget-section-title"><i data-lucide="${icon}"></i>${title}${badge?' '+badge:''}</div>
-        <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}">+ Add</button>
+        <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}">${t('btn_add_section')}</button>
       </div>
     </td>
     ${monthCells}
-    <td class="sec-month">Annual</td>
+    <td class="sec-month">${t('grid_annual')}</td>
   </tr>`;
 }
 
@@ -1180,7 +1508,7 @@ function buildSurplusRow(p) {
     return `<td data-surplus="${i}" style="color:${s>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(s)}</td>`;
   }).join('');
   const ann = rowTotal(p.income.rows) - rowTotal(p.essential.rows) - rowTotal(p.nonEssential.rows) - rowTotal(p.creditCards.rows) - rowTotal(p.investments.rows);
-  return `<tr class="surplus-row"><td>Monthly Surplus (=)</td>${cells}<td data-surplus-ann style="color:${ann>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(ann)}</td></tr>`;
+  return `<tr class="surplus-row"><td>${t('sec_surplus')}</td>${cells}<td data-surplus-ann style="color:${ann>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(ann)}</td></tr>`;
 }
 
 function buildOperatingResultRow(b) {
@@ -1189,7 +1517,7 @@ function buildOperatingResultRow(b) {
     return `<td data-opresult="${i}" style="color:${r>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(r)}</td>`;
   }).join('');
   const ann = rowTotal(b.revenue.rows) - rowTotal(b.expenses.rows);
-  return `<tr class="surplus-row"><td>Operating Result (=)</td>${cells}<td data-opresult-ann style="color:${ann>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(ann)}</td></tr>`;
+  return `<tr class="surplus-row"><td>${t('sec_operating_result')}</td>${cells}<td data-opresult-ann style="color:${ann>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(ann)}</td></tr>`;
 }
 
 // ── Single unified table for Personal Budget ──────────────────
@@ -1200,35 +1528,35 @@ function buildPersonalGrid(yd) {
     <thead><tr>${makeHeader('personal')}</tr></thead>
 
     <tbody>
-      ${sectionRow('trending-up','INCOME (+)','personal','income')}
+      ${sectionRow('trending-up',t('sec_income'),'personal','income')}
       ${buildGridTable(p.income.rows,'personal','income')}
-      ${buildSubtotalRow('Total Income', p.income.rows,'income-row','income')}
+      ${buildSubtotalRow(t('sec_total_income'), p.income.rows,'income-row','income')}
     </tbody>
 
     <tbody>
-      ${sectionRow('home','ESSENTIAL EXPENSES (−)','personal','essential','<span class="chip chip-amber" style="font-size:.62rem">Target ≤50%</span>')}
+      ${sectionRow('home',t('sec_essential'),'personal','essential',`<span class="chip chip-amber" style="font-size:.62rem">${t('chip_essential')}</span>`)}
       ${buildGridTable(p.essential.rows,'personal','essential')}
-      ${buildSubtotalRow('Subtotal Essential', p.essential.rows,'','essential')}
-      ${buildPctRow('% of Income', p.essential.rows, p.income.rows,'essential', 50, false)}
+      ${buildSubtotalRow(t('sub_essential'), p.essential.rows,'','essential')}
+      ${buildPctRow(t('pct_income'), p.essential.rows, p.income.rows,'essential', 50, false)}
     </tbody>
 
     <tbody>
-      ${sectionRow('coffee','NON-ESSENTIAL (−)','personal','nonEssential','<span class="chip chip-blue" style="font-size:.62rem">Target ≤30%</span>')}
+      ${sectionRow('coffee',t('sec_non_essential'),'personal','nonEssential',`<span class="chip chip-blue" style="font-size:.62rem">${t('chip_non_essential')}</span>`)}
       ${buildGridTable(p.nonEssential.rows,'personal','nonEssential')}
-      ${buildSubtotalRow('Subtotal Non-Essential', p.nonEssential.rows,'','nonEssential')}
-      ${buildPctRow('% of Income', p.nonEssential.rows, p.income.rows,'nonEssential', 30, false)}
+      ${buildSubtotalRow(t('sub_non_essential'), p.nonEssential.rows,'','nonEssential')}
+      ${buildPctRow(t('pct_income'), p.nonEssential.rows, p.income.rows,'nonEssential', 30, false)}
     </tbody>
 
     <tbody>
-      ${sectionRow('credit-card','CREDIT CARDS (−)','personal','creditCards')}
+      ${sectionRow('credit-card',t('sec_credit_cards'),'personal','creditCards')}
       ${buildGridTable(p.creditCards.rows,'personal','creditCards')}
-      ${buildSubtotalRow('Total Credit Cards', p.creditCards.rows,'','creditCards')}
+      ${buildSubtotalRow(t('sub_credit_cards'), p.creditCards.rows,'','creditCards')}
     </tbody>
 
     <tbody>
-      ${sectionRow('bar-chart-2','INVESTMENTS (→)','personal','investments','<span class="chip chip-green" style="font-size:.62rem">Target ≥20%</span>')}
+      ${sectionRow('bar-chart-2',t('sec_investments_p'),'personal','investments',`<span class="chip chip-green" style="font-size:.62rem">${t('chip_investments')}</span>`)}
       ${buildGridTable(p.investments.rows,'personal','investments')}
-      ${buildPctRow('% of Income', p.investments.rows, p.income.rows,'investments', 20, true)}
+      ${buildPctRow(t('pct_income'), p.investments.rows, p.income.rows,'investments', 20, true)}
     </tbody>
 
     <tbody>
@@ -1245,15 +1573,15 @@ function buildBusinessGrid(yd) {
     <thead><tr>${makeHeader('business')}</tr></thead>
 
     <tbody>
-      ${sectionRow('arrow-up-circle','REVENUE (+)','business','revenue')}
+      ${sectionRow('arrow-up-circle',t('sec_revenue'),'business','revenue')}
       ${buildGridTable(b.revenue.rows,'business','revenue')}
-      ${buildSubtotalRow('Total Revenue', b.revenue.rows,'income-row','revenue')}
+      ${buildSubtotalRow(t('sub_revenue'), b.revenue.rows,'income-row','revenue')}
     </tbody>
 
     <tbody>
-      ${sectionRow('arrow-down-circle','EXPENSES (−)','business','expenses')}
+      ${sectionRow('arrow-down-circle',t('sec_expenses_b'),'business','expenses')}
       ${buildGridTable(b.expenses.rows,'business','expenses')}
-      ${buildSubtotalRow('Total Expenses', b.expenses.rows,'','expenses')}
+      ${buildSubtotalRow(t('sub_expenses'), b.expenses.rows,'','expenses')}
     </tbody>
 
     <tbody>
@@ -1302,12 +1630,12 @@ function copyColumn(module, monthIdx) {
     btn.style.display = parseInt(btn.dataset.pastecol) === monthIdx ? 'none' : 'inline-block';
   });
 
-  showToast(`${MONTHS[monthIdx]} copied — hover another column to paste`, 'info', 4000);
+  showToast(`${t('months')[monthIdx]} copied — hover another column to paste`, 'info', 4000);
 }
 
 function pasteColumn(module, targetMonthIdx) {
-  if(!colClipboard || colClipboard.module !== module) { showToast('Nothing copied for this module','warning'); return; }
-  if(colClipboard.monthIdx === targetMonthIdx) { showToast('Source and target are the same column','warning'); return; }
+  if(!colClipboard || colClipboard.module !== module) { showToast(t('toast_nothing_copied'),'warning'); return; }
+  if(colClipboard.monthIdx === targetMonthIdx) { showToast(t('toast_same_col'),'warning'); return; }
 
   const yd = getYearData(CY);
   const sections = module === 'investments' ? yd.investments : yd[module];
@@ -1318,7 +1646,7 @@ function pasteColumn(module, targetMonthIdx) {
 
   saveData();
   renderSection(CS);
-  showToast(`${MONTHS[colClipboard.monthIdx]} → ${MONTHS[targetMonthIdx]} pasted!`, 'success');
+  showToast(`${t('months')[colClipboard.monthIdx]} → ${t('months')[targetMonthIdx]} pasted!`, 'success');
 }
 
 function clearColumnClipboard() {
@@ -1374,7 +1702,7 @@ function bindBudgetEvents(container) {
         const tr = delBtn.closest('tr');
         if(tr) tr.remove();
         refreshGridTotals(container, yd, module);
-        showToast('Row removed','info');
+        showToast(t('toast_row_removed'),'info');
       } else {
         delBtn.classList.add('confirming');
         delBtn.title = 'Click again to confirm';
@@ -1529,9 +1857,9 @@ function renderInvestments() {
 
   // Summary cards
   document.getElementById('invest-summary').innerHTML = `
-    <div class="card card-sm"><div class="kpi-label"><i data-lucide="piggy-bank"></i>Total Invested</div><div class="kpi-value text-blue" style="font-size:1.2rem">${fmt(grandTotal)}</div><div class="kpi-sub">All time (this year)</div></div>
-    <div class="card card-sm"><div class="kpi-label"><i data-lucide="shield"></i>Fixed Income</div><div class="kpi-value text-green" style="font-size:1.2rem">${fmt(fixedTotal)}</div><div class="kpi-sub">${grandTotal>0?pct(fixedTotal,grandTotal)+'% of portfolio':'—'}</div></div>
-    <div class="card card-sm"><div class="kpi-label"><i data-lucide="activity"></i>Variable Income</div><div class="kpi-value text-amber" style="font-size:1.2rem">${fmt(varTotal)}</div><div class="kpi-sub">${grandTotal>0?pct(varTotal,grandTotal)+'% of portfolio':'—'}</div></div>
+    <div class="card card-sm"><div class="kpi-label"><i data-lucide="piggy-bank"></i>${t('invest_total_invested')}</div><div class="kpi-value text-blue" style="font-size:1.2rem">${fmt(grandTotal)}</div><div class="kpi-sub">${t('invest_all_time')}</div></div>
+    <div class="card card-sm"><div class="kpi-label"><i data-lucide="shield"></i>${t('invest_fixed_income')}</div><div class="kpi-value text-green" style="font-size:1.2rem">${fmt(fixedTotal)}</div><div class="kpi-sub">${grandTotal>0?pct(fixedTotal,grandTotal)+' '+t('invest_pct_portfolio'):'—'}</div></div>
+    <div class="card card-sm"><div class="kpi-label"><i data-lucide="activity"></i>${t('invest_variable_income')}</div><div class="kpi-value text-amber" style="font-size:1.2rem">${fmt(varTotal)}</div><div class="kpi-sub">${grandTotal>0?pct(varTotal,grandTotal)+' '+t('invest_pct_portfolio'):'—'}</div></div>
   `;
 
   // Single unified table — columns align between Fixed and Variable sections
@@ -1540,15 +1868,15 @@ function renderInvestments() {
     <thead><tr>${makeHeader('investments')}</tr></thead>
 
     <tbody>
-      ${sectionRow('shield','FIXED INCOME (Renda Fixa)','investments','fixedIncome')}
+      ${sectionRow('shield',t('sec_fixed_income'),'investments','fixedIncome')}
       ${buildGridTable(inv.fixedIncome.rows,'investments','fixedIncome')}
-      ${buildSubtotalRow('Fixed Income Total', inv.fixedIncome.rows,'','fixedIncome')}
+      ${buildSubtotalRow(t('sub_fixed_income'), inv.fixedIncome.rows,'','fixedIncome')}
     </tbody>
 
     <tbody>
-      ${sectionRow('activity','VARIABLE INCOME (Renda Variável)','investments','variableIncome')}
+      ${sectionRow('activity',t('sec_variable_income'),'investments','variableIncome')}
       ${buildGridTable(inv.variableIncome.rows,'investments','variableIncome')}
-      ${buildSubtotalRow('Variable Income Total', inv.variableIncome.rows,'','variableIncome')}
+      ${buildSubtotalRow(t('sub_variable_income'), inv.variableIncome.rows,'','variableIncome')}
     </tbody>
   </table></div>`;
 
@@ -1572,19 +1900,19 @@ function renderWeekly() {
   const tbody = document.getElementById('fixed-bills-tbody');
   if(!tbody) return;
   if(!wc.fixedBills.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--muted)">No fixed bills. Add some!</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="padding:20px;text-align:center;color:var(--muted)">${t('weekly_empty_bills')}</td></tr>`;
   } else {
     tbody.innerHTML = wc.fixedBills.map(b => {
       const status = (b.statuses || {})[mk] || 'pending';
-      const statusChip = status === 'paid' ? '<span class="chip chip-green">Paid ✓</span>' : status === 'overdue' ? '<span class="chip chip-red">Overdue ⚠</span>' : '<span class="chip chip-amber">Pending ⏳</span>';
+      const statusChip = status === 'paid' ? `<span class="chip chip-green">${t('weekly_status_paid')}</span>` : status === 'overdue' ? `<span class="chip chip-red">${t('weekly_status_overdue')}</span>` : `<span class="chip chip-amber">${t('weekly_status_pending')}</span>`;
       return `<tr>
         <td>${b.desc}</td>
         <td>${fmt(b.amount)}</td>
         <td>Week ${b.dueWeek||1}</td>
         <td><select class="form-input" style="padding:3px 7px;font-size:.75rem;width:auto" data-billstatus="${b.id}" data-mk="${mk}">
-          <option value="pending" ${status==='pending'?'selected':''}>Pending</option>
-          <option value="paid"    ${status==='paid'   ?'selected':''}>Paid</option>
-          <option value="overdue" ${status==='overdue'?'selected':''}>Overdue</option>
+          <option value="pending" ${status==='pending'?'selected':''}>${t('weekly_status_pending').replace(' ⏳','')}</option>
+          <option value="paid"    ${status==='paid'   ?'selected':''}>${t('weekly_status_paid').replace(' ✓','')}</option>
+          <option value="overdue" ${status==='overdue'?'selected':''}>${t('weekly_status_overdue').replace(' ⚠','')}</option>
         </select></td>
         <td><button class="btn-icon" data-delbill="${b.id}" style="font-size:11px;color:var(--muted)">✕</button></td>
       </tr>`;
@@ -1595,7 +1923,7 @@ function renderWeekly() {
   const vtbody = document.getElementById('var-exp-tbody');
   if(!vtbody) return;
   if(!wc.variableCategories.length) {
-    vtbody.innerHTML = `<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted)">No categories. Add one!</td></tr>`;
+    vtbody.innerHTML = `<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted)">${t('weekly_empty_cats')}</td></tr>`;
   } else {
     vtbody.innerHTML = wc.variableCategories.map(cat => {
       const weeks = ((cat.weeklyData||{})[mk]) || [0,0,0,0,0];
@@ -1626,7 +1954,7 @@ function bindWeeklyEvents() {
       const mk = e.target.dataset.mk;
       const yd = getYearData(CY);
       const bill = yd.weeklyControl.fixedBills.find(b=>b.id===id);
-      if(bill) { if(!bill.statuses) bill.statuses={}; bill.statuses[mk]=e.target.value; saveData(); showToast('Status updated','success'); }
+      if(bill) { if(!bill.statuses) bill.statuses={}; bill.statuses[mk]=e.target.value; saveData(); showToast(t('toast_status_updated'),'success'); }
     }
   });
 
@@ -1661,41 +1989,41 @@ function bindWeeklyEvents() {
     const delBill = e.target.closest('[data-delbill]');
     if(delBill) {
       const id = delBill.dataset.delbill;
-      if(confirm('Remove this bill?')) {
+      if(confirm(t('confirm_remove_bill'))) {
         const yd = getYearData(CY);
         yd.weeklyControl.fixedBills = yd.weeklyControl.fixedBills.filter(b=>b.id!==id);
-        saveData(); renderWeekly(); showToast('Bill removed','info');
+        saveData(); renderWeekly(); showToast(t('toast_bill_removed'),'info');
       }
     }
     const delCat = e.target.closest('[data-delcat]');
     if(delCat) {
       const id = delCat.dataset.delcat;
-      if(confirm('Remove this category?')) {
+      if(confirm(t('confirm_remove_cat'))) {
         const yd = getYearData(CY);
         yd.weeklyControl.variableCategories = yd.weeklyControl.variableCategories.filter(c=>c.id!==id);
-        saveData(); renderWeekly(); showToast('Category removed','info');
+        saveData(); renderWeekly(); showToast(t('toast_cat_removed'),'info');
       }
     }
   });
 
   document.getElementById('add-fixed-bill-btn').addEventListener('click', () => {
-    const desc = prompt('Bill description:');
+    const desc = prompt(t('prompt_bill_desc'));
     if(!desc) return;
-    const amt = parseFloat(prompt('Amount:'));
+    const amt = parseFloat(prompt(t('prompt_amount')));
     if(isNaN(amt)) return;
-    const week = parseInt(prompt('Due week (1-5):')||'1');
+    const week = parseInt(prompt(t('prompt_due_week'))||'1');
     const yd = getYearData(CY);
     yd.weeklyControl.fixedBills.push({ id:uid(), desc, amount:amt, dueWeek:Math.min(5,Math.max(1,week)), statuses:{} });
-    saveData(); renderWeekly(); showToast('Bill added','success');
+    saveData(); renderWeekly(); showToast(t('toast_bill_added'),'success');
   });
 
   document.getElementById('add-var-cat-btn').addEventListener('click', () => {
-    const label = prompt('Category name:');
+    const label = prompt(t('prompt_cat_name'));
     if(!label) return;
-    const limit = parseFloat(prompt('Monthly limit:'));
+    const limit = parseFloat(prompt(t('prompt_monthly_limit')));
     const yd = getYearData(CY);
     yd.weeklyControl.variableCategories.push({ id:uid(), label, limit:isNaN(limit)?0:limit, weeklyData:{} });
-    saveData(); renderWeekly(); showToast('Category added','success');
+    saveData(); renderWeekly(); showToast(t('toast_cat_added'),'success');
   });
 
   document.getElementById('weekly-month-sel').addEventListener('change', () => renderWeekly());
@@ -1710,22 +2038,22 @@ function renderDebts() {
   const totalActive = active.reduce((a,d) => a + Math.max(0,(d.numInstallments-(d.paidInstallments||0))*d.installment),0);
 
   document.getElementById('debt-summary').innerHTML = `
-    <div class="card"><div class="kpi-label"><i data-lucide="alert-circle"></i>Active Debts</div><div class="kpi-value text-amber" style="font-size:1.2rem">${fmt(totalActive)}</div><div class="kpi-sub">${active.length} debt(s) active</div></div>
-    <div class="card"><div class="kpi-label"><i data-lucide="check-circle"></i>Paid Off</div><div class="kpi-value text-green" style="font-size:1.2rem">${debts.filter(d=>d.status==='paid').length}</div><div class="kpi-sub">debt(s) cleared</div></div>
-    <div class="card"><div class="kpi-label"><i data-lucide="credit-card"></i>Total Debts</div><div class="kpi-value" style="font-size:1.2rem">${debts.length}</div><div class="kpi-sub">all time</div></div>
+    <div class="card"><div class="kpi-label"><i data-lucide="alert-circle"></i>${t('debt_active')}</div><div class="kpi-value text-amber" style="font-size:1.2rem">${fmt(totalActive)}</div><div class="kpi-sub">${active.length} ${t('debt_active_count')}</div></div>
+    <div class="card"><div class="kpi-label"><i data-lucide="check-circle"></i>${t('debt_paid_off')}</div><div class="kpi-value text-green" style="font-size:1.2rem">${debts.filter(d=>d.status==='paid').length}</div><div class="kpi-sub">${t('debt_cleared_count')}</div></div>
+    <div class="card"><div class="kpi-label"><i data-lucide="credit-card"></i>${t('debt_total')}</div><div class="kpi-value" style="font-size:1.2rem">${debts.length}</div><div class="kpi-sub">${t('debt_all_time')}</div></div>
   `;
   lucide.createIcons({ el: document.getElementById('debt-summary') });
 
   const tbody = document.getElementById('debts-tbody');
   if(!debts.length) {
-    tbody.innerHTML = `<tr><td colspan="11" style="padding:30px;text-align:center;color:var(--muted)">No debts! 🎉</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="padding:30px;text-align:center;color:var(--muted)">${t('empty_debts')}</td></tr>`;
     return;
   }
   tbody.innerHTML = debts.map(d => {
     const remaining = Math.max(0,(d.numInstallments-(d.paidInstallments||0))*d.installment);
     const total = d.numInstallments * d.installment;
     const progPct = d.numInstallments > 0 ? pctCapped((d.paidInstallments||0), d.numInstallments) : 0;
-    const statusChip = d.status==='active' ? '<span class="chip chip-amber">Active</span>' : '<span class="chip chip-green">Paid Off</span>';
+    const statusChip = d.status==='active' ? `<span class="chip chip-amber">${t('status_active')}</span>` : `<span class="chip chip-green">${t('status_paid_off')}</span>`;
     return `<tr>
       <td style="font-weight:600">${d.creditor}</td>
       <td class="text-muted">${d.startDate||'—'}</td>
@@ -1748,7 +2076,7 @@ function renderDebts() {
 
 function openDebtModal(id) {
   const d = id ? D.debts.find(x=>x.id===id) : null;
-  document.getElementById('debt-modal-title').textContent = d ? 'Edit Debt' : 'Add Debt';
+  document.getElementById('debt-modal-title').textContent = d ? t('modal_edit_debt') : t('modal_add_debt');
   document.getElementById('d-creditor').value   = d?.creditor||'';
   document.getElementById('d-start').value      = d?.startDate||'';
   document.getElementById('d-installment').value= d?.installment||'';
@@ -1765,7 +2093,7 @@ function saveDebt() {
   const creditor = document.getElementById('d-creditor').value.trim();
   const installment = parseFloat(document.getElementById('d-installment').value);
   const numInstallments = parseInt(document.getElementById('d-num').value);
-  if(!creditor || isNaN(installment) || isNaN(numInstallments)) { showToast('Fill in required fields','error'); return; }
+  if(!creditor || isNaN(installment) || isNaN(numInstallments)) { showToast(t('toast_fill_required'),'error'); return; }
 
   const id = document.getElementById('d-edit-id').value;
   const obj = {
@@ -1776,7 +2104,7 @@ function saveDebt() {
   };
   if(id) D.debts = D.debts.map(x=>x.id===id?obj:x);
   else D.debts.push(obj);
-  saveData(); closeModal('debt-modal'); renderDebts(); showToast('Debt saved','success');
+  saveData(); closeModal('debt-modal'); renderDebts(); showToast(t('toast_debt_saved'),'success');
 }
 
 // ============================================================
@@ -1788,7 +2116,7 @@ function renderGoals() {
   Object.values(cols).forEach(c => { if(c) c.innerHTML=''; });
 
   if(!goals.length) {
-    document.getElementById('goals-short').innerHTML = `<div class="empty-state"><i data-lucide="target"></i><h3>No goals yet</h3><p>Add your first financial goal!</p></div>`;
+    document.getElementById('goals-short').innerHTML = `<div class="empty-state"><i data-lucide="target"></i><h3>${t('empty_goals_title')}</h3><p>${t('empty_goals_msg')}</p></div>`;
     lucide.createIcons({ el: document.getElementById('goals-short') });
     return;
   }
@@ -1801,7 +2129,7 @@ function renderGoals() {
     const monthsLeft = deadline ? Math.max(1, (deadline.getFullYear()-now.getFullYear())*12 + (deadline.getMonth()-now.getMonth())) : null;
     const monthly = monthsLeft && g.amount ? fmt(g.amount/monthsLeft) : '—';
     const progPct = g.amount > 0 ? pctCapped(g.progress||0, g.amount) : 0;
-    const typeChips = { short:'<span class="chip chip-green">Short</span>', medium:'<span class="chip chip-amber">Medium</span>', long:'<span class="chip chip-blue">Long</span>' };
+    const typeChips = { short:`<span class="chip chip-green">${t('chip_short')}</span>`, medium:`<span class="chip chip-amber">${t('chip_medium')}</span>`, long:`<span class="chip chip-blue">${t('chip_long')}</span>` };
     const card = document.createElement('div');
     card.className = 'goal-card';
     card.innerHTML = `
@@ -1810,13 +2138,13 @@ function renderGoals() {
       </div>
       <div class="goal-card-reason">${g.reason||''}</div>
       <div class="goal-stats">
-        <div class="goal-stat"><div class="goal-stat-label">Target</div><div class="goal-stat-value">${fmt(g.amount)}</div></div>
-        <div class="goal-stat"><div class="goal-stat-label">Deadline</div><div class="goal-stat-value">${g.deadline||'—'}</div></div>
-        <div class="goal-stat"><div class="goal-stat-label">Monthly Need</div><div class="goal-stat-value">${monthly}</div></div>
-        <div class="goal-stat"><div class="goal-stat-label">Saved</div><div class="goal-stat-value">${fmt(g.progress||0)}</div></div>
+        <div class="goal-stat"><div class="goal-stat-label">${t('goal_target')}</div><div class="goal-stat-value">${fmt(g.amount)}</div></div>
+        <div class="goal-stat"><div class="goal-stat-label">${t('goal_deadline')}</div><div class="goal-stat-value">${g.deadline||'—'}</div></div>
+        <div class="goal-stat"><div class="goal-stat-label">${t('goal_monthly_need')}</div><div class="goal-stat-value">${monthly}</div></div>
+        <div class="goal-stat"><div class="goal-stat-label">${t('goal_saved')}</div><div class="goal-stat-value">${fmt(g.progress||0)}</div></div>
       </div>
       <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:4px"><span>Progress</span><span>${progPct}%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:4px"><span>${t('goal_progress')}</span><span>${progPct}%</span></div>
         <div class="pbar-wrap"><div class="pbar-fill ${progPct>=100?'green':'accent'}" style="width:${progPct}%"></div></div>
       </div>
       ${g.plan ? `<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;background:var(--surface2);border-radius:6px;padding:8px">${g.plan}</div>` : ''}
@@ -1831,7 +2159,7 @@ function renderGoals() {
 
 function openGoalModal(id) {
   const g = id ? (D.goals||[]).find(x=>x.id===id) : null;
-  document.getElementById('goal-modal-title').textContent = g ? 'Edit Goal' : 'New Goal';
+  document.getElementById('goal-modal-title').textContent = g ? t('modal_edit_goal') : t('modal_new_goal');
   document.getElementById('g-name').value     = g?.name||'';
   document.getElementById('g-reason').value   = g?.reason||'';
   document.getElementById('g-amount').value   = g?.amount||'';
@@ -1846,7 +2174,7 @@ function openGoalModal(id) {
 function saveGoal() {
   const name   = document.getElementById('g-name').value.trim();
   const amount = parseFloat(document.getElementById('g-amount').value);
-  if(!name) { showToast('Goal name is required','error'); return; }
+  if(!name) { showToast(t('toast_goal_name_req'),'error'); return; }
   const id = document.getElementById('g-edit-id').value;
   const obj = {
     id:id||uid(), name, reason:document.getElementById('g-reason').value.trim(),
@@ -1856,7 +2184,7 @@ function saveGoal() {
   };
   if(!D.goals) D.goals=[];
   if(id) D.goals = D.goals.map(x=>x.id===id?obj:x); else D.goals.push(obj);
-  saveData(); closeModal('goal-modal'); renderGoals(); showToast('Goal saved','success');
+  saveData(); closeModal('goal-modal'); renderGoals(); showToast(t('toast_goal_saved'),'success');
 }
 
 // ============================================================
@@ -1878,14 +2206,16 @@ function saveSettings() {
   saveData();
   applySettings();
   closeModal('settings-modal');
-  showToast('Settings saved','success');
+  showToast(t('toast_settings_saved'),'success');
 }
 
 function applySettings() {
   const s = D.settings||{};
   document.documentElement.setAttribute('data-theme', s.theme||'dark');
   document.getElementById('sidebar-app-name').textContent = s.appName||'Finflow';
-  document.title = (s.appName||'Finflow') + ' — Your money. Your clarity.';
+  document.title = (s.appName||'Finflow') + ' — ' + t('app_tagline');
+  if(s.lang && s.lang !== CL) { CL = s.lang; }
+  applyI18n();
 }
 
 function exportData() {
@@ -1894,7 +2224,7 @@ function exportData() {
   a.href = URL.createObjectURL(blob);
   a.download = `finflow_backup_${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(a.href);
-  showToast('Data exported','success');
+  showToast(t('toast_data_exported'),'success');
 }
 
 function importData(file) {
@@ -1905,8 +2235,8 @@ function importData(file) {
       if(!parsed.settings && !parsed.years && !parsed.debts) throw new Error('Invalid format');
       D = parsed;
       saveData(); applySettings(); updateYearDisplay(); renderSection(CS);
-      showToast('Data imported successfully','success');
-    } catch(err) { showToast('Invalid backup file','error'); }
+      showToast(t('toast_data_imported'),'success');
+    } catch(err) { showToast(t('toast_invalid_backup'),'error'); }
   };
   reader.readAsText(file);
 }
@@ -1938,7 +2268,7 @@ function finishOnboarding() {
   saveData(); applySettings(); updateYearDisplay();
   closeModal('onboarding-modal');
   renderSection('dashboard');
-  showToast(`Welcome to ${appName}! 🚀`,'success',4000);
+  showToast(`${t('ob_welcome')} ${appName}! 🚀`,'success',4000);
 }
 
 // ============================================================
@@ -1947,7 +2277,7 @@ function finishOnboarding() {
 function bindAddRowModal() {
   document.getElementById('addrow-confirm').addEventListener('click', () => {
     const label = document.getElementById('addrow-label').value.trim();
-    if(!label) { showToast('Row label is required','error'); return; }
+    if(!label) { showToast(t('toast_row_label_req'),'error'); return; }
     const module  = document.getElementById('addrow-module').value;
     const section = document.getElementById('addrow-section').value;
     const yd = getYearData(CY);
@@ -1958,7 +2288,7 @@ function bindAddRowModal() {
     if(rows) {
       rows.push({ id:uid(), label, months:m12, custom:true });
       saveData(); closeModal('addrow-modal'); renderSection(CS);
-      showToast('Row added','success');
+      showToast(t('toast_row_added'),'success');
     }
   });
   document.getElementById('addrow-close').addEventListener('click', ()=>closeModal('addrow-modal'));
@@ -1985,12 +2315,13 @@ async function init() {
     applySettings();
   }
 
+  applyI18n();
   updateYearDisplay();
 
   // Populate monthly selector for weekly
   const sel = document.getElementById('weekly-month-sel');
   if(sel) {
-    sel.innerHTML = MONTHS_FULL.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+    sel.innerHTML = t('months_full').map((m,i)=>`<option value="${i}">${m}</option>`).join('');
     sel.value = CM;
   }
 
@@ -2014,18 +2345,18 @@ async function init() {
   document.getElementById('export-btn-top').addEventListener('click', exportData);
   document.getElementById('s-import-file').addEventListener('change', e => { if(e.target.files[0]) importData(e.target.files[0]); });
   document.getElementById('s-reset').addEventListener('click', () => {
-    if(confirm('Reset ALL data? This cannot be undone.')) {
-      if(confirm('Are you sure? All data will be lost.')) {
+    if(confirm(t('confirm_reset_1'))) {
+      if(confirm(t('confirm_reset_2'))) {
         localStorage.removeItem(STORAGE_KEY);
         D = { settings:{appName:'Finflow',currency:'BRL',theme:'dark'}, years:{}, debts:[], goals:[] };
-        saveData(); renderSection(CS); showToast('Data reset','info');
+        saveData(); renderSection(CS); showToast(t('toast_data_reset'),'info');
       }
     }
   });
 
   // --- COLUMN CLIPBOARD: clear on Escape ---
   document.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && colClipboard) { clearColumnClipboard(); showToast('Copy cleared','info'); }
+    if(e.key === 'Escape' && colClipboard) { clearColumnClipboard(); showToast(t('toast_copy_cleared'),'info'); }
   });
 
   // --- DEBT MODAL ---
@@ -2037,9 +2368,9 @@ async function init() {
     const edit = e.target.closest('[data-editdebt]');
     if(edit) openDebtModal(edit.dataset.editdebt);
     const del = e.target.closest('[data-deldebt]');
-    if(del && confirm('Delete this debt?')) {
+    if(del && confirm(t('confirm_delete_debt'))) {
       D.debts = D.debts.filter(x=>x.id!==del.dataset.deldebt);
-      saveData(); renderDebts(); showToast('Debt deleted','info');
+      saveData(); renderDebts(); showToast(t('toast_debt_deleted'),'info');
     }
   });
 
@@ -2052,9 +2383,9 @@ async function init() {
     const edit = e.target.closest('[data-editgoal]');
     if(edit) openGoalModal(edit.dataset.editgoal);
     const del = e.target.closest('[data-delgoal]');
-    if(del && confirm('Delete this goal?')) {
+    if(del && confirm(t('confirm_delete_goal'))) {
       D.goals = D.goals.filter(x=>x.id!==del.dataset.delgoal);
-      saveData(); renderGoals(); showToast('Goal deleted','info');
+      saveData(); renderGoals(); showToast(t('toast_goal_deleted'),'info');
     }
   });
 
@@ -2071,6 +2402,12 @@ async function init() {
   document.getElementById('ob-next-2').addEventListener('click', ()=>setOnboardingStep(3));
   document.getElementById('ob-back-3').addEventListener('click', ()=>setOnboardingStep(2));
   document.getElementById('ob-finish').addEventListener('click', finishOnboarding);
+
+  // --- LANGUAGE TOGGLE ---
+  document.getElementById('lang-toggle').addEventListener('click', e => {
+    const btn = e.target.closest('.lang-btn');
+    if(btn && btn.dataset.lang !== CL) setLang(btn.dataset.lang);
+  });
 
   // --- ADD ROW MODAL ---
   bindAddRowModal();
