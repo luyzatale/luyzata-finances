@@ -683,6 +683,13 @@ const T = {
     kpi_balance:'Net Balance', kpi_balance_sub:'Income − Expenses',
     kpi_goals:'Goals', kpi_goals_sub:'No goals yet', kpi_goals_saved:'saved',
     kpi_debt:'Active Debt', kpi_debt_sub:'Total remaining',
+    // Default row labels (personal budget)
+    row_salary:'Salary', row_other_income:'Other Income',
+    row_rent:'Rent / Housing', row_food:'Supermarket / Food',
+    row_health_ins:'Health Insurance', row_car_ins:'Car Insurance',
+    row_utilities:'Utilities (elec/gas/inet)', row_phone:'Phone',
+    row_gym:'Gym / Fitness', row_streaming:'Streaming Services',
+    row_card_1:'Card 1', row_monthly_inv:'Monthly Investment',
     rule_title:'50/30/20 Rule', rule_basis:'Based on full year',
     rule_essential:'Essential Expenses', rule_essential_target:'Target: ≤ 50% of income',
     rule_non_essential:'Non-Essential', rule_non_essential_target:'Target: ≤ 30% of income',
@@ -826,6 +833,13 @@ const T = {
     kpi_balance:'Netto Saldo', kpi_balance_sub:'Inkomen − Uitgaven',
     kpi_goals:'Doelen', kpi_goals_sub:'Nog geen doelen', kpi_goals_saved:'gespaard',
     kpi_debt:'Actieve Schuld', kpi_debt_sub:'Totaal resterend',
+    // Default row labels (personal budget)
+    row_salary:'Salaris', row_other_income:'Overig Inkomen',
+    row_rent:'Huur / Wonen', row_food:'Supermarkt / Eten',
+    row_health_ins:'Zorgverzekering', row_car_ins:'Autoverzekering',
+    row_utilities:'Nutsvoorzieningen (elek/gas/inet)', row_phone:'Telefoon',
+    row_gym:'Sportschool / Fitness', row_streaming:'Streamingdiensten',
+    row_card_1:'Kaart 1', row_monthly_inv:'Maandelijkse Investering',
     rule_title:'50/30/20 Regel', rule_basis:'Gebaseerd op heel jaar',
     rule_essential:'Vaste Uitgaven', rule_essential_target:'Doel: ≤ 50% van inkomen',
     rule_non_essential:'Niet-essentieel', rule_non_essential_target:'Doel: ≤ 30% van inkomen',
@@ -969,9 +983,27 @@ function applyI18n() {
   document.documentElement.lang = CL;
 }
 
+const DEFAULT_ROW_KEYS = ['salary','other-income','rent','food','health-ins','car-ins','utilities','phone','gym','streaming','card-1','monthly-inv'];
+
+function translateDefaultRows() {
+  if(!D.years) return;
+  Object.values(D.years).forEach(yd => {
+    if(!yd.personal) return;
+    ['income','essential','nonEssential','creditCards','investments'].forEach(sec => {
+      const s = yd.personal[sec];
+      if(!s || !s.rows) return;
+      s.rows.forEach(r => {
+        const key = 'row_' + r.id.replace(/-/g,'_');
+        if(T.en[key]) r.label = t(key);
+      });
+    });
+  });
+}
+
 function setLang(lang) {
   CL = lang;
   if(D.settings) D.settings.lang = lang;
+  translateDefaultRows();
   saveData();
   applyI18n();
   renderSection(CS);
@@ -1107,26 +1139,26 @@ function makeYearTemplate() {
   return {
     personal: {
       income:      { rows: [
-        { id:'salary',       label:'Salary',                   months:m12(), fixed:true },
-        { id:'other-income', label:'Other Income',             months:m12() }
+        { id:'salary',       label:t('row_salary'),       months:m12(), fixed:true },
+        { id:'other-income', label:t('row_other_income'), months:m12() }
       ]},
       essential:   { rows: [
-        { id:'rent',         label:'Rent / Housing',           months:m12() },
-        { id:'food',         label:'Supermarket / Food',       months:m12() },
-        { id:'health-ins',   label:'Health Insurance',         months:m12() },
-        { id:'car-ins',      label:'Car Insurance',            months:m12() },
-        { id:'utilities',    label:'Utilities (elec/gas/inet)',months:m12() },
-        { id:'phone',        label:'Phone',                    months:m12() }
+        { id:'rent',         label:t('row_rent'),         months:m12() },
+        { id:'food',         label:t('row_food'),         months:m12() },
+        { id:'health-ins',   label:t('row_health_ins'),   months:m12() },
+        { id:'car-ins',      label:t('row_car_ins'),      months:m12() },
+        { id:'utilities',    label:t('row_utilities'),    months:m12() },
+        { id:'phone',        label:t('row_phone'),        months:m12() }
       ]},
       nonEssential:{ rows: [
-        { id:'gym',          label:'Gym / Fitness',            months:m12() },
-        { id:'streaming',    label:'Streaming Services',       months:m12() }
+        { id:'gym',          label:t('row_gym'),          months:m12() },
+        { id:'streaming',    label:t('row_streaming'),    months:m12() }
       ]},
       creditCards: { rows: [
-        { id:'card-1',       label:'Card 1',                   months:m12() }
+        { id:'card-1',       label:t('row_card_1'),       months:m12() }
       ]},
       investments: { rows: [
-        { id:'monthly-inv',  label:'Monthly Investment',       months:m12(), fixed:true }
+        { id:'monthly-inv',  label:t('row_monthly_inv'),  months:m12(), fixed:true }
       ]}
     },
     business: {
