@@ -682,6 +682,7 @@ function setSyncStatus(state) {
 // ============================================================
 async function loadData() {
   setSyncStatus('syncing');
+  let cloudReachable = false;
 
   // 1 — try cloud API (with 5 s timeout)
   try {
@@ -691,6 +692,7 @@ async function loadData() {
     clearTimeout(tid);
 
     if (resp.ok) {
+      cloudReachable = true;
       const remote = await resp.json();
       if (remote && (remote.settings || remote.years || remote.debts)) {
         D = remote;
@@ -698,17 +700,28 @@ async function loadData() {
         setSyncStatus('saved');
         return true;
       }
+      // Cloud reachable but blob is empty — fall through to migrate local data up
     }
   } catch(e) {
     // Network error or timeout — fall through to localStorage
-    setSyncStatus('offline');
     showToast('Cloud unavailable — using local data.', 'warning', 4000);
   }
 
   // 2 — fall back to localStorage
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) { D = JSON.parse(raw); setSyncStatus('offline'); return true; }
+    if (raw) {
+      D = JSON.parse(raw);
+      if (cloudReachable) {
+        // Blob was empty: push existing local data to cloud now
+        showToast('Syncing local data to cloud…', 'info', 3000);
+        setSyncStatus('pending');
+        setTimeout(pushToBlob, 300);
+      } else {
+        setSyncStatus('offline');
+      }
+      return true;
+    }
   } catch(e) { showToast('Error loading data. Starting fresh.','error'); }
 
   setSyncStatus('idle');
