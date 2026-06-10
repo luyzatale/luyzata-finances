@@ -235,6 +235,15 @@ select.form-input option{background:var(--surface)}
 .wk-cell-input{width:60px;background:transparent;border:1px solid transparent;color:var(--text);text-align:center;padding:2px 3px;border-radius:3px;font-size:.75rem;font-family:inherit}
 .wk-cell-input:focus{outline:none;border-color:var(--accent);background:var(--surface2)}
 
+/* ========== COLUMN COPY/PASTE ========== */
+.month-th{vertical-align:top;position:relative}
+.col-btns{display:none;gap:3px;justify-content:center;margin-top:4px}
+.month-th:hover .col-btns{display:flex}
+.col-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:3px;padding:1px 5px;font-size:.68rem;cursor:pointer;line-height:1.7;transition:all var(--tr);font-family:inherit;white-space:nowrap}
+.col-btn:hover{color:var(--accent);border-color:var(--accent)}
+.col-btn.copied{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.12)}
+.paste-col-btn{display:none}
+
 /* ========== INVESTMENTS ========== */
 .invest-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
 
@@ -616,6 +625,7 @@ let CM = new Date().getMonth();     // current month (0-indexed)
 let CS = 'dashboard';               // current section
 let CHARTS = {};                    // chart instances
 let debtAlertDismissed = false;
+let colClipboard = null;            // { module, monthIdx, data: { sectionKey: { rowId: value } } }
 
 // ============================================================
 // DATA MODULE
@@ -1018,7 +1028,11 @@ function buildPctRow(label, rows, incomeRows, sk='') {
 }
 
 function makeHeader(module, section) {
-  return `<th>Category <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}" title="Add row">+</button></th>${MONTHS.map(m=>`<th>${m}</th>`).join('')}<th>Annual</th>`;
+  const monthThs = MONTHS.map((m,i) => `<th class="month-th">${m}<div class="col-btns">
+    <button class="col-btn copy-col-btn" data-copycol="${i}" data-module="${module}" title="Copy ${m}">⎘ Copy</button>
+    <button class="col-btn paste-col-btn" data-pastecol="${i}" data-module="${module}" title="Paste here">⏋ Paste</button>
+  </div></th>`).join('');
+  return `<th>Category <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}" title="Add row">+</button></th>${monthThs}<th>Annual</th>`;
 }
 
 function buildPersonalGrid(yd) {
@@ -1123,6 +1137,55 @@ function renderBusiness() {
 }
 
 // ============================================================
+// COLUMN COPY / PASTE
+// ============================================================
+function copyColumn(module, monthIdx) {
+  const yd = getYearData(CY);
+  const sections = module === 'investments' ? yd.investments : yd[module];
+  const data = {};
+  Object.entries(sections).forEach(([sk, sec]) => {
+    if(sec?.rows) {
+      data[sk] = {};
+      sec.rows.forEach(r => { data[sk][r.id] = r.months[monthIdx]; });
+    }
+  });
+  colClipboard = { module, monthIdx, data };
+
+  // Highlight the copy button as active
+  document.querySelectorAll(`.copy-col-btn[data-module="${module}"]`).forEach(btn => btn.classList.remove('copied'));
+  document.querySelectorAll(`.copy-col-btn[data-copycol="${monthIdx}"][data-module="${module}"]`).forEach(btn => btn.classList.add('copied'));
+
+  // Show all paste buttons for this module
+  document.querySelectorAll(`.paste-col-btn[data-module="${module}"]`).forEach(btn => {
+    btn.style.display = parseInt(btn.dataset.pastecol) === monthIdx ? 'none' : 'inline-block';
+  });
+
+  showToast(`${MONTHS[monthIdx]} copied — hover another column to paste`, 'info', 4000);
+}
+
+function pasteColumn(module, targetMonthIdx) {
+  if(!colClipboard || colClipboard.module !== module) { showToast('Nothing copied for this module','warning'); return; }
+  if(colClipboard.monthIdx === targetMonthIdx) { showToast('Source and target are the same column','warning'); return; }
+
+  const yd = getYearData(CY);
+  const sections = module === 'investments' ? yd.investments : yd[module];
+  Object.entries(colClipboard.data).forEach(([sk, rowData]) => {
+    const sec = sections[sk];
+    if(sec?.rows) sec.rows.forEach(r => { if(rowData[r.id] !== undefined) r.months[targetMonthIdx] = rowData[r.id]; });
+  });
+
+  saveData();
+  renderSection(CS);
+  showToast(`${MONTHS[colClipboard.monthIdx]} → ${MONTHS[targetMonthIdx]} pasted!`, 'success');
+}
+
+function clearColumnClipboard() {
+  colClipboard = null;
+  document.querySelectorAll('.copy-col-btn').forEach(btn => btn.classList.remove('copied'));
+  document.querySelectorAll('.paste-col-btn').forEach(btn => btn.style.display = 'none');
+}
+
+// ============================================================
 // BUDGET EVENTS (shared)
 // ============================================================
 function bindBudgetEvents(container) {
@@ -1160,6 +1223,16 @@ function bindBudgetEvents(container) {
         renderSection(CS);
         showToast('Row removed','info');
       }
+    }
+    const copyBtn = e.target.closest('[data-copycol]');
+    if(copyBtn) {
+      e.stopPropagation();
+      copyColumn(copyBtn.dataset.module, parseInt(copyBtn.dataset.copycol));
+    }
+    const pasteBtn = e.target.closest('[data-pastecol]');
+    if(pasteBtn && pasteBtn.style.display !== 'none') {
+      e.stopPropagation();
+      pasteColumn(pasteBtn.dataset.module, parseInt(pasteBtn.dataset.pastecol));
     }
   });
 }
@@ -1731,6 +1804,11 @@ function init() {
         saveData(); renderSection(CS); showToast('Data reset','info');
       }
     }
+  });
+
+  // --- COLUMN CLIPBOARD: clear on Escape ---
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && colClipboard) { clearColumnClipboard(); showToast('Copy cleared','info'); }
   });
 
   // --- DEBT MODAL ---
