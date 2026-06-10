@@ -681,7 +681,7 @@ const T = {
     kpi_income:'Total Income', kpi_income_sub:'Personal',
     kpi_expenses:'Total Expenses', kpi_expenses_sub:'All categories',
     kpi_balance:'Net Balance', kpi_balance_sub:'Income − Expenses',
-    kpi_goals:'Goals', kpi_goals_sub:'Active goals', kpi_goals_active:'active', kpi_goals_done:'completed',
+    kpi_goals:'Goals', kpi_goals_sub:'No goals yet', kpi_goals_saved:'saved',
     kpi_debt:'Active Debt', kpi_debt_sub:'Total remaining',
     rule_title:'50/30/20 Rule', rule_basis:'Based on full year',
     rule_essential:'Essential Expenses', rule_essential_target:'Target: ≤ 50% of income',
@@ -824,7 +824,7 @@ const T = {
     kpi_income:'Totaal Inkomen', kpi_income_sub:'Persoonlijk',
     kpi_expenses:'Totale Uitgaven', kpi_expenses_sub:'Alle categorieën',
     kpi_balance:'Netto Saldo', kpi_balance_sub:'Inkomen − Uitgaven',
-    kpi_goals:'Doelen', kpi_goals_sub:'Actieve doelen', kpi_goals_active:'actief', kpi_goals_done:'voltooid',
+    kpi_goals:'Doelen', kpi_goals_sub:'Nog geen doelen', kpi_goals_saved:'gespaard',
     kpi_debt:'Actieve Schuld', kpi_debt_sub:'Totaal resterend',
     rule_title:'50/30/20 Regel', rule_basis:'Gebaseerd op heel jaar',
     rule_essential:'Vaste Uitgaven', rule_essential_target:'Doel: ≤ 50% van inkomen',
@@ -1283,8 +1283,8 @@ function updateKPIs(yd) {
   }, 0);
 
   const goals = D.goals || [];
-  const activeGoals = goals.length;
-  const completedGoals = goals.filter(g => (g.progress||0) >= g.amount).length;
+  const totalGoalTarget = goals.reduce((a, g) => a + (g.amount || 0), 0);
+  const totalGoalSaved  = goals.reduce((a, g) => a + (g.progress || 0), 0);
 
   const set = (id,val,cls) => {
     const el = document.getElementById(id);
@@ -1300,11 +1300,11 @@ function updateKPIs(yd) {
   set('kpi-debt', activeDebt);
 
   const goalsEl = document.getElementById('kpi-goals');
-  if(goalsEl) { goalsEl.textContent = activeGoals; goalsEl.className = 'kpi-value text-green'; }
+  if(goalsEl) { goalsEl.textContent = fmt(totalGoalTarget); goalsEl.className = 'kpi-value text-green'; }
   const goalsSubEl = document.getElementById('kpi-goals-sub');
-  if(goalsSubEl) goalsSubEl.textContent = completedGoals > 0
-    ? completedGoals + '/' + activeGoals + ' ' + t('kpi_goals_done')
-    : activeGoals + ' ' + t('kpi_goals_active');
+  if(goalsSubEl) goalsSubEl.textContent = goals.length > 0
+    ? fmt(totalGoalSaved) + ' ' + t('kpi_goals_saved')
+    : t('kpi_goals_sub');
 }
 
 function updateRule(yd) {
