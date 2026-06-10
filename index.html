@@ -238,6 +238,7 @@ select.form-input option{background:var(--surface)}
 /* ========== SECTION TITLE ROW (inside unified table) ========== */
 .section-title-row td{padding:0!important;background:var(--surface2);border-top:2px solid var(--border)!important;border-bottom:1px solid var(--border)!important}
 .section-title-row:first-child td{border-top:none!important}
+.section-title-row td.sec-month{text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.04em;color:var(--muted);opacity:.7;vertical-align:middle;padding:6px 2px!important}
 .section-title-inner{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;gap:8px}
 .section-title-inner .budget-section-title{display:flex;align-items:center;gap:7px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .section-title-inner .budget-section-title svg{width:14px;height:14px}
@@ -1094,14 +1095,19 @@ function makeHeader(module) {
   return `<th>Category</th>${monthThs}<th>Annual</th>`;
 }
 
-// Section separator row (spans all 14 columns)
+// Section separator row — first cell has title+add, remaining cells repeat month names
 function sectionRow(icon, title, module, section, badge='') {
-  return `<tr class="section-title-row"><td colspan="14" style="padding:0">
-    <div class="section-title-inner">
-      <div class="budget-section-title"><i data-lucide="${icon}"></i>${title}${badge?' '+badge:''}</div>
-      <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}">+ Add</button>
-    </div>
-  </td></tr>`;
+  const monthCells = MONTHS.map(m => `<td class="sec-month">${m}</td>`).join('');
+  return `<tr class="section-title-row">
+    <td style="padding:0">
+      <div class="section-title-inner">
+        <div class="budget-section-title"><i data-lucide="${icon}"></i>${title}${badge?' '+badge:''}</div>
+        <button class="add-th-btn" data-addrow="1" data-module="${module}" data-section="${section}">+ Add</button>
+      </div>
+    </td>
+    ${monthCells}
+    <td class="sec-month">Annual</td>
+  </tr>`;
 }
 
 function buildGridTable(rows, module, sectionKey) {
